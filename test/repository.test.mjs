@@ -15,11 +15,6 @@ test("the official repository contains valid independent Package Releases", asyn
       packageKey: "flatpack",
       version: "1.0.0",
     },
-    {
-      slug: "reference-package",
-      packageKey: "reference_package",
-      version: "1.1.0",
-    },
   ])
 })
 
@@ -30,7 +25,7 @@ test("tampered release artifacts and release identities fail closed", async () =
       recursive: true,
       filter: (source) => !source.includes("node_modules") && !source.includes(".git"),
     })
-    const worker = resolve(temporaryRoot, "packages/package-host-reference/dist/worker.js")
+    const worker = resolve(temporaryRoot, "packages/flatpack/dist/worker.js")
     await writeFile(worker, `${await readFile(worker, "utf8")}\n`)
     await assert.rejects(validateRepository(temporaryRoot), /artifact byte size mismatch/u)
 
@@ -41,7 +36,7 @@ test("tampered release artifacts and release identities fail closed", async () =
     })
     const releasePath = resolve(
       temporaryRoot,
-      "packages/package-host-reference/mosaic-package-release.json"
+      "packages/flatpack/mosaic-package-release.json"
     )
     const release = JSON.parse(await readFile(releasePath, "utf8"))
     release.releaseDigest = `sha256:${"0".repeat(64)}`

@@ -10,9 +10,9 @@ Package independently.
 
 | Package | Identity | Status |
 | --- | --- | --- |
-| [Package Host Reference](packages/package-host-reference) | `lockidynamics/reference_package` | N123 acceptance fixture |
+| [FlatPack](packages/flatpack) | `lockidynamics/flatpack` | First-party native email output package |
 
-Future official Packages belong in `packages/<catalog-slug>/`. Every package
+Official Packages belong in `packages/<catalog-slug>/`. Every package
 owns its manifest, immutable release descriptor, prebuilt artifacts, schemas,
 role suggestions, changelog, tests, and release history. Package identity is
 `publisherKey + packageKey + version + releaseDigest`; repository paths are
