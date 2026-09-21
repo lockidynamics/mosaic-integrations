@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Governed responsive Email region rasterization for Mosaic.",
   "homepage": "https://github.com/lockidynamics/mosaic-integrations/tree/main/packages/flatpack",
+  "logo": "logo.svg",
   "mosaicVersion": "0.0.1",
   "slug": "flatpack",
   "category": "email"

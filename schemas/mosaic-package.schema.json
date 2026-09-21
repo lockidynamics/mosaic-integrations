@@ -42,7 +42,7 @@
       "maxLength": 64,
       "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
     },
-    "category": { "enum": ["authentication", "esp", "workflow"] },
+    "category": { "enum": ["authentication", "esp", "email", "workflow"] },
     "renderContributions": {
       "type": "array",
       "maxItems": 16,
