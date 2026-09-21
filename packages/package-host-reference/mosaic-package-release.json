@@ -4,24 +4,24 @@
   "publisherKey": "lockidynamics",
   "packageKey": "reference_package",
   "catalogSlug": "reference-package",
-  "version": "1.0.1",
-  "releaseDigest": "sha256:b9dc05cd7a2c7afbb62ae12e85e3e6161317fdd42e8472a23cfd9d2e323c72e7",
+  "version": "1.1.0",
+  "releaseDigest": "sha256:ccd577104f5df3cfe9b96e1f408e59d5aa74951e1e7eb43e37cdfffa1e9dee6e",
   "hostContract": "mosaic-package-host-v1",
   "mosaicCompatibility": { "minimumVersion": "0.0.1", "maximumVersion": null },
   "artifacts": [
     {
-      "path": "dist/workspace.html",
-      "kind": "ui",
-      "mediaType": "text/html",
-      "byteSize": 14592,
-      "digest": "sha256:91521a042f7af6e442ae149998362379791f6ae888dd2d8c51bd0deff2607091"
-    },
-    {
       "path": "dist/worker.js",
       "kind": "worker",
       "mediaType": "text/javascript",
-      "byteSize": 918,
-      "digest": "sha256:5ed5094bcd3b884b628644eee76220910fb20108f20788ce55e635afeecc467e"
+      "byteSize": 1283,
+      "digest": "sha256:c8f9e35b8d60649fdbf50de3afe5f4e28a0eebffcaeea32944304824f8590b78"
+    },
+    {
+      "path": "schemas/reference_package.native_action_v1.schema.json",
+      "kind": "schema",
+      "mediaType": "application/schema+json",
+      "byteSize": 793,
+      "digest": "sha256:e552f074d453107f8ce0c4b751f152be11356f9e9282d0b6e1f638cc722aa0ca"
     },
     {
       "path": "schemas/reference_package.note_v1.schema.json",
@@ -46,14 +46,16 @@
     }
   ],
   "interfaces": {
-    "uiBridge": {
-      "version": "mosaic-package-ui-bridge-v1",
-      "bundlePath": "dist/workspace.html"
-    },
+    "uiBridge": null,
     "worker": {
       "version": "mosaic-package-worker-v1",
       "artifactPath": "dist/worker.js",
       "operations": [
+        {
+          "id": "reference_package.validate_workspace",
+          "inputSchemaId": "reference_package.native_action_v1",
+          "resultSchemaId": "reference_package.validation_result_v1"
+        },
         {
           "id": "reference_package.validate_note",
           "inputSchemaId": "reference_package.note_v1",
@@ -100,10 +102,43 @@
     {
       "schemaVersion": "mosaic-package-contributions-v1",
       "id": "reference_package.workspace",
-      "kind": "workspace",
+      "kind": "native-surface",
+      "nativeVersion": "mosaic-package-native-contributions-v1",
       "description": "Reference package workspace",
-      "requiredCapabilityId": null,
-      "entryPoint": "dist/workspace.html"
+      "requiredCapabilityId": "reference_package.use",
+      "surface": "content-workspace",
+      "model": {
+        "schemaVersion": "mosaic-package-native-model-v1",
+        "surface": "content-workspace",
+        "items": [
+          {
+            "kind": "projection",
+            "id": "reference_package.library_scope",
+            "label": "Library scope",
+            "value": "Resolved by Mosaic",
+            "tone": "info"
+          },
+          {
+            "kind": "field",
+            "id": "reference_package.note_title",
+            "label": "Reference note",
+            "control": "text",
+            "value": ""
+          },
+          {
+            "kind": "action",
+            "id": "reference_package.validate_workspace",
+            "label": "Validate",
+            "icon": "preview",
+            "commandId": "reference_package.validate_workspace"
+          }
+        ]
+      },
+      "commandOperation": {
+        "operationId": "reference_package.validate_workspace",
+        "inputSchemaId": "reference_package.native_action_v1",
+        "resultSchemaId": "reference_package.validation_result_v1"
+      }
     },
     {
       "schemaVersion": "mosaic-package-contributions-v1",

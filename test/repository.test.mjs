@@ -13,7 +13,7 @@ test("the official repository contains valid independent Package Releases", asyn
     {
       slug: "reference-package",
       packageKey: "reference_package",
-      version: "1.0.1",
+      version: "1.1.0",
     },
   ])
 })

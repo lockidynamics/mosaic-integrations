@@ -22,3 +22,9 @@ Do not add empty framework directories, shared runtime code, package install
 hooks, database migrations, or a repository-wide Package identity. Share only
 repository validation and governance; each Package owns an independent release
 and lifecycle.
+
+Use `native-surface` for UI that should appear as part of Mosaic. Native models
+are data-only and Mosaic renders them with its shared components. Use an
+explicit `sandbox-workspace` only for a genuinely standalone framed experience;
+package markup, styles, and code never enter Mosaic's main browser or server
+process.

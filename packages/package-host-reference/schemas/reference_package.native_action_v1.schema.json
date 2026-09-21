@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["schemaVersion", "commandId", "input"],
+  "properties": {
+    "schemaVersion": { "const": "mosaic-package-native-command-v1" },
+    "commandId": { "const": "reference_package.validate_workspace" },
+    "input": {
+      "type": "object",
+      "required": ["fields"],
+      "properties": {
+        "fields": {
+          "type": "object",
+          "required": ["reference_package.note_title"],
+          "properties": {
+            "reference_package.note_title": {
+              "type": "string",
+              "maxLength": 160
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

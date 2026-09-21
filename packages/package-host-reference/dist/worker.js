@@ -1,3 +1,13 @@
+if (context.operationId === "reference_package.validate_workspace") {
+  const title = input.input?.fields?.["reference_package.note_title"]
+  const empty = typeof title !== "string" || title.trim().length === 0
+  return {
+    diagnostics: empty
+      ? [{ code: "REFERENCE_TITLE_REQUIRED", severity: "BLOCKER", message: "A title is required." }]
+      : [],
+  }
+}
+
 if (context.operationId === "reference_package.validate_note") {
   const empty = typeof input.title !== "string" || input.title.trim().length === 0
   return {

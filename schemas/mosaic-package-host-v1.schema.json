@@ -6,6 +6,10 @@
     { "$ref": "#/$defs/uiBootstrap" },
     { "$ref": "#/$defs/uiBridgeRequest" },
     { "$ref": "#/$defs/uiBridgeResponse" },
+    { "$ref": "#/$defs/nativeCommand" },
+    { "$ref": "#/$defs/nativeCommandResult" },
+    { "$ref": "#/$defs/nativeEvaluation" },
+    { "$ref": "#/$defs/nativeEvaluationResult" },
     { "$ref": "#/$defs/workerRequest" },
     { "$ref": "#/$defs/workerResult" },
     { "$ref": "#/$defs/dataRequest" },
@@ -96,6 +100,110 @@
         },
         "requestId": { "$ref": "#/$defs/opaqueId" },
         "correlationId": { "$ref": "#/$defs/opaqueId" }
+      }
+    },
+    "nativeCommand": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "commandId", "input"],
+      "properties": {
+        "schemaVersion": { "const": "mosaic-package-native-command-v1" },
+        "commandId": { "$ref": "#/$defs/identity" },
+        "input": {}
+      }
+    },
+    "nativeCommandResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "kind",
+        "packageKey",
+        "expectedWorkingRevision",
+        "extension"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "mosaic-package-native-command-result-v1"
+        },
+        "kind": { "const": "communication-package-extension" },
+        "packageKey": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,63}$"
+        },
+        "expectedWorkingRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "extension": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["schemaVersion", "value"],
+              "properties": {
+                "schemaVersion": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 160
+                },
+                "value": { "type": "object" }
+              }
+            },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+    "nativeEvaluation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "phase", "baseChecksum", "input"],
+      "properties": {
+        "schemaVersion": { "const": "mosaic-package-native-evaluation-v1" },
+        "phase": { "enum": ["preview", "complete", "output"] },
+        "baseChecksum": { "$ref": "#/$defs/sha256" },
+        "input": {}
+      }
+    },
+    "nativeEvaluationResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "phase",
+        "baseChecksum",
+        "outcome",
+        "diagnostics"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "mosaic-package-native-evaluation-result-v1"
+        },
+        "phase": { "enum": ["preview", "complete"] },
+        "baseChecksum": { "$ref": "#/$defs/sha256" },
+        "outcome": { "const": "no-op" },
+        "diagnostics": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["code", "severity", "messageKey"],
+            "properties": {
+              "code": {
+                "type": "string",
+                "pattern": "^[A-Z][A-Z0-9_.-]{1,127}$"
+              },
+              "severity": { "enum": ["warning", "error"] },
+              "messageKey": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_.-]{1,159}$"
+              }
+            }
+          }
+        }
       }
     },
     "uiBootstrap": {

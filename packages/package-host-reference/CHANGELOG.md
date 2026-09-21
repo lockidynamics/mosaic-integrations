@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.0] - 2026-09-20
+
+### Changed
+
+- Replaced the frame workspace with a closed native surface model rendered by
+  Mosaic shared components.
+- Added a restricted Worker action for the native workspace proof.
+
 ## [1.0.1] - 2026-09-20
 
 ### Fixed

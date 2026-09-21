@@ -274,10 +274,8 @@
         "id": { "$ref": "#/$defs/identity" },
         "kind": {
           "enum": [
-            "page",
-            "workspace",
-            "panel",
-            "dialog",
+            "native-surface",
+            "sandbox-workspace",
             "command",
             "governed-content-type",
             "read-model",
@@ -294,6 +292,27 @@
         "requiredCapabilityId": {
           "anyOf": [{ "$ref": "#/$defs/identity" }, { "type": "null" }]
         },
+        "nativeVersion": {
+          "const": "mosaic-package-native-contributions-v1"
+        },
+        "surface": {
+          "enum": [
+            "library-settings",
+            "catalog",
+            "campaign-create",
+            "content-workspace",
+            "builder-toolbar",
+            "builder-canvas",
+            "builder-inspector",
+            "preview",
+            "review",
+            "calendar"
+          ]
+        },
+        "model": { "$ref": "#/$defs/nativeModel" },
+        "modelOperation": { "$ref": "#/$defs/nativeOperationRef" },
+        "commandOperation": { "$ref": "#/$defs/nativeOperationRef" },
+        "evaluationOperation": { "$ref": "#/$defs/nativeOperationRef" },
         "entryPoint": { "$ref": "#/$defs/safePath" },
         "operationId": { "$ref": "#/$defs/identity" },
         "inputSchemaId": { "$ref": "#/$defs/identity" },
@@ -318,10 +337,18 @@
         {
           "if": {
             "properties": {
-              "kind": { "enum": ["page", "workspace", "panel", "dialog"] }
+              "kind": { "const": "sandbox-workspace" }
             }
           },
           "then": { "required": ["entryPoint"] }
+        },
+        {
+          "if": {
+            "properties": { "kind": { "const": "native-surface" } }
+          },
+          "then": {
+            "required": ["nativeVersion", "surface", "model"]
+          }
         },
         {
           "if": {
@@ -371,6 +398,148 @@
           }
         }
       ]
+    },
+    "nativeOperationRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["operationId", "inputSchemaId", "resultSchemaId"],
+      "properties": {
+        "operationId": { "$ref": "#/$defs/identity" },
+        "inputSchemaId": { "$ref": "#/$defs/identity" },
+        "resultSchemaId": { "$ref": "#/$defs/identity" }
+      }
+    },
+    "nativeModel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "surface", "items"],
+      "properties": {
+        "schemaVersion": { "const": "mosaic-package-native-model-v1" },
+        "surface": {
+          "enum": [
+            "library-settings",
+            "catalog",
+            "campaign-create",
+            "content-workspace",
+            "builder-toolbar",
+            "builder-canvas",
+            "builder-inspector",
+            "preview",
+            "review",
+            "calendar"
+          ]
+        },
+        "items": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "oneOf": [
+              { "$ref": "#/$defs/nativeAction" },
+              { "$ref": "#/$defs/nativeField" },
+              { "$ref": "#/$defs/nativeCanvasDecoration" },
+              { "$ref": "#/$defs/nativeContentType" },
+              { "$ref": "#/$defs/nativeProjection" }
+            ]
+          }
+        }
+      }
+    },
+    "nativeAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "id", "label", "icon"],
+      "properties": {
+        "kind": { "const": "action" },
+        "id": { "$ref": "#/$defs/identity" },
+        "label": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "description": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "icon": {
+          "enum": [
+            "add",
+            "edit",
+            "delete",
+            "duplicate",
+            "image",
+            "preview",
+            "settings"
+          ]
+        },
+        "commandId": { "$ref": "#/$defs/identity" },
+        "disabled": { "type": "boolean" }
+      }
+    },
+    "nativeField": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "id", "label", "control", "value"],
+      "properties": {
+        "kind": { "const": "field" },
+        "id": { "$ref": "#/$defs/identity" },
+        "label": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "control": {
+          "enum": ["text", "number", "select", "switch", "date", "asset"]
+        },
+        "value": {},
+        "options": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "label"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1, "maxLength": 64 },
+              "label": { "type": "string", "minLength": 1, "maxLength": 160 }
+            }
+          }
+        },
+        "commandId": { "$ref": "#/$defs/identity" }
+      }
+    },
+    "nativeCanvasDecoration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "id", "targetIds", "appearance", "label"],
+      "properties": {
+        "kind": { "const": "canvas-decoration" },
+        "id": { "$ref": "#/$defs/identity" },
+        "targetIds": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "items": { "type": "string", "minLength": 8, "maxLength": 128 }
+        },
+        "appearance": { "enum": ["outline", "rail"] },
+        "label": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "commandId": { "$ref": "#/$defs/identity" }
+      }
+    },
+    "nativeContentType": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "id", "label", "description"],
+      "properties": {
+        "kind": { "const": "content-type" },
+        "id": { "$ref": "#/$defs/identity" },
+        "label": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "description": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "destinationId": { "$ref": "#/$defs/identity" },
+        "commandId": { "$ref": "#/$defs/identity" }
+      }
+    },
+    "nativeProjection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "id", "label", "value", "tone"],
+      "properties": {
+        "kind": { "const": "projection" },
+        "id": { "$ref": "#/$defs/identity" },
+        "label": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "value": {},
+        "tone": { "enum": ["neutral", "info", "success", "warning", "danger"] },
+        "destinationId": { "$ref": "#/$defs/identity" }
+      }
     }
   }
 }

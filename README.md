@@ -39,11 +39,14 @@ and installed, each Library binding is explicit, and Mosaic remains authoritativ
 for authentication, authorization, capability grants and denials, Library
 isolation, Review, Complete, audit, artifact validation, and atomic activation.
 
-Package UI runs only in an isolated frame through the typed UI Bridge.
-Deterministic code runs only in the resource-limited Worker. Provider, network,
-and AI behavior runs only through host-mediated Connector jobs. Packages receive
-no ambient filesystem, network, environment, session, secret, database, host
-DOM, Prisma, SQL, or server-action access.
+Native Package surfaces are closed data models rendered by Mosaic with its
+shared components. Packages contribute no React, HTML, CSS, callbacks, routes,
+or host DOM access. A sandboxed frame and typed UI Bridge remain available only
+for explicit `sandbox-workspace` contributions. Deterministic code runs only in
+the resource-limited Worker. Provider, network, and AI behavior runs only
+through host-mediated Connector jobs. Packages receive no ambient filesystem,
+network, environment, session, secret, database, Prisma, SQL, or server-action
+access.
 
 See [Contributing](CONTRIBUTING.md), [Releasing](docs/RELEASING.md), and
 [Security](SECURITY.md).
