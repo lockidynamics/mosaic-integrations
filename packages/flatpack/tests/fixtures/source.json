@@ -1,0 +1,18 @@
+{
+  "hostContract": "mosaic-email-raster-regions-v1",
+  "releaseDigest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "regions": [
+    {
+      "id": "hero-region",
+      "moduleInstanceIds": ["module_hero"],
+      "stateOverrides": [
+        {
+          "selection": [
+            { "moduleInstanceId": "module_hero", "variationId": null }
+          ],
+          "link": { "kind": "auto" }
+        }
+      ]
+    }
+  ]
+}

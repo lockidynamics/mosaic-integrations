@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "mosaic-email-raster-plan-request-v1",
+  "regionId": "hero-region",
+  "sourceChecksum": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "desktopWidthPx": 600,
+  "mobileWidthPx": 375,
+  "states": [
+    {
+      "selectionKey": "[{\"moduleInstanceId\":\"module_hero\",\"variationId\":null}]",
+      "sourceDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "empty": false
+    },
+    {
+      "selectionKey": "[{\"moduleInstanceId\":\"module_hero\",\"variationId\":\"variation_a\"}]",
+      "sourceDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "empty": false
+    },
+    {
+      "selectionKey": "[{\"moduleInstanceId\":\"module_hero\",\"variationId\":\"variation_b\"}]",
+      "sourceDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "empty": false
+    },
+    {
+      "selectionKey": "[{\"moduleInstanceId\":\"module_hero\",\"variationId\":\"variation_c\"}]",
+      "sourceDigest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "empty": true
+    }
+  ]
+}

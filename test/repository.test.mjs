@@ -11,6 +11,11 @@ const root = resolve(import.meta.dirname, "..")
 test("the official repository contains valid independent Package Releases", async () => {
   assert.deepEqual(await validateRepository(root), [
     {
+      slug: "flatpack",
+      packageKey: "flatpack",
+      version: "1.0.0",
+    },
+    {
       slug: "reference-package",
       packageKey: "reference_package",
       version: "1.1.0",

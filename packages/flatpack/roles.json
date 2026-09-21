@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "mosaic-package-roles-v1",
+  "suggestions": [
+    {
+      "roleType": "builder",
+      "capabilityIds": ["flatpack.use"]
+    },
+    {
+      "roleType": "editor",
+      "capabilityIds": ["flatpack.use"]
+    }
+  ]
+}

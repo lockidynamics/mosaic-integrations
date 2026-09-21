@@ -1,0 +1,86 @@
+{
+  "$schema": "../../schemas/mosaic-package-release-v2.schema.json",
+  "schemaVersion": "mosaic-package-release-v2",
+  "publisherKey": "lockidynamics",
+  "packageKey": "flatpack",
+  "catalogSlug": "flatpack",
+  "version": "1.0.0",
+  "releaseDigest": "sha256:232b1adaedd65eb36ad015657b1c3e16b221558d544b319ad5674cd1a916ce62",
+  "hostContract": "mosaic-package-host-v1",
+  "mosaicCompatibility": { "minimumVersion": "0.0.1", "maximumVersion": null },
+  "artifacts": [
+    {
+      "path": "dist/worker.js",
+      "kind": "worker",
+      "mediaType": "text/javascript",
+      "byteSize": 2265,
+      "digest": "sha256:1cd501e029a19acf9b9034d985ad554662288c78a9ef381ed0aba8b617da0c75"
+    },
+    {
+      "path": "schemas/flatpack.email_raster_source_v1.schema.json",
+      "kind": "schema",
+      "mediaType": "application/schema+json",
+      "byteSize": 2485,
+      "digest": "sha256:954a97f29163c9ae6120b0946d1a212153f606745e5c8e9a49fc53b19acac1fd"
+    },
+    {
+      "path": "schemas/flatpack.email_raster_plan_request_v1.schema.json",
+      "kind": "schema",
+      "mediaType": "application/schema+json",
+      "byteSize": 1104,
+      "digest": "sha256:05e78a90761bb727a869d77b67be9bbe32e51a7099c837eaf9b1bd8533e9cd76"
+    },
+    {
+      "path": "schemas/flatpack.email_raster_plan_v1.schema.json",
+      "kind": "schema",
+      "mediaType": "application/schema+json",
+      "byteSize": 1157,
+      "digest": "sha256:174ff0b228993a095b0ee0fec68963e5dae14e56235757916ad31222390f4b94"
+    }
+  ],
+  "interfaces": {
+    "uiBridge": null,
+    "worker": {
+      "version": "mosaic-package-worker-v1",
+      "artifactPath": "dist/worker.js",
+      "operations": [
+        {
+          "id": "flatpack.rasterize_region",
+          "inputSchemaId": "flatpack.email_raster_plan_request_v1",
+          "resultSchemaId": "flatpack.email_raster_plan_v1"
+        }
+      ]
+    },
+    "data": {
+      "version": "mosaic-package-data-v1",
+      "sourceCodecIdentity": "flatpack-email-raster-source-v1",
+      "retainedSourceCodecIdentities": [],
+      "records": [],
+      "migrations": []
+    },
+    "connectorJobs": null
+  },
+  "capabilities": [
+    {
+      "schemaVersion": "mosaic-package-capabilities-v1",
+      "id": "flatpack.use",
+      "description": "Use FlatPack Email output behavior in a Library.",
+      "requestedScope": "library",
+      "requestedClassification": "standard"
+    }
+  ],
+  "contributions": [
+    {
+      "schemaVersion": "mosaic-package-contributions-v1",
+      "id": "flatpack.email_raster_region",
+      "kind": "email-raster-region",
+      "description": "Rasterize contiguous governed Email regions from canonical resolved states.",
+      "requiredCapabilityId": "flatpack.use",
+      "regionContract": "mosaic-email-raster-regions-v1",
+      "sourceSchemaId": "flatpack.email_raster_source_v1",
+      "operationId": "flatpack.rasterize_region",
+      "inputSchemaId": "flatpack.email_raster_plan_request_v1",
+      "resultSchemaId": "flatpack.email_raster_plan_v1"
+    }
+  ]
+}
