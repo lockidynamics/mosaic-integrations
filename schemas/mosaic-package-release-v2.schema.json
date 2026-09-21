@@ -1,0 +1,376 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/lockidynamics/mosaic/blob/main/public/schemas/mosaic-package-release-v2.schema.json",
+  "title": "Mosaic Package Release v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "publisherKey",
+    "packageKey",
+    "catalogSlug",
+    "version",
+    "releaseDigest",
+    "hostContract",
+    "mosaicCompatibility",
+    "artifacts",
+    "interfaces",
+    "capabilities",
+    "contributions"
+  ],
+  "properties": {
+    "$schema": { "type": "string", "maxLength": 255 },
+    "schemaVersion": { "const": "mosaic-package-release-v2" },
+    "publisherKey": { "$ref": "#/$defs/key" },
+    "packageKey": { "$ref": "#/$defs/key" },
+    "catalogSlug": {
+      "type": "string",
+      "maxLength": 64,
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "version": { "$ref": "#/$defs/semver" },
+    "releaseDigest": { "$ref": "#/$defs/sha256" },
+    "hostContract": { "const": "mosaic-package-host-v1" },
+    "mosaicCompatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minimumVersion", "maximumVersion"],
+      "properties": {
+        "minimumVersion": { "$ref": "#/$defs/semver" },
+        "maximumVersion": {
+          "anyOf": [{ "$ref": "#/$defs/semver" }, { "type": "null" }]
+        }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "items": { "$ref": "#/$defs/artifact" }
+    },
+    "interfaces": { "$ref": "#/$defs/interfaces" },
+    "capabilities": {
+      "type": "array",
+      "maxItems": 128,
+      "items": { "$ref": "#/$defs/capability" }
+    },
+    "contributions": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 128,
+      "items": { "$ref": "#/$defs/contribution" }
+    }
+  },
+  "$defs": {
+    "key": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]{0,63}$"
+    },
+    "identity": {
+      "type": "string",
+      "maxLength": 160,
+      "pattern": "^[a-z][a-z0-9_]*(?:\\.[a-z][a-z0-9_]*)+$"
+    },
+    "semver": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,14})\\.(0|[1-9][0-9]{0,14})\\.(0|[1-9][0-9]{0,14})$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "safePath": {
+      "type": "string",
+      "maxLength": 255,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.{1,2}(?:/|$))[a-zA-Z0-9._-]+(?:/[a-zA-Z0-9._-]+)*$"
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "kind", "mediaType", "byteSize", "digest"],
+      "properties": {
+        "path": { "$ref": "#/$defs/safePath" },
+        "kind": {
+          "enum": ["ui", "worker", "wasm", "schema", "fixture", "connector"]
+        },
+        "mediaType": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "byteSize": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100000000
+        },
+        "digest": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "operation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "inputSchemaId", "resultSchemaId"],
+      "properties": {
+        "id": { "$ref": "#/$defs/identity" },
+        "inputSchemaId": { "$ref": "#/$defs/identity" },
+        "resultSchemaId": { "$ref": "#/$defs/identity" }
+      }
+    },
+    "dataRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "schemaId", "mode", "maxBytes"],
+      "properties": {
+        "id": { "$ref": "#/$defs/identity" },
+        "schemaId": { "$ref": "#/$defs/identity" },
+        "mode": {
+          "enum": [
+            "working-record",
+            "immutable-version",
+            "read-model",
+            "artifact-metadata"
+          ]
+        },
+        "maxBytes": { "type": "integer", "minimum": 1, "maximum": 10000000 }
+      }
+    },
+    "dataMigration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "fromSchemaId", "toSchemaId", "workerOperationId"],
+      "properties": {
+        "id": { "$ref": "#/$defs/identity" },
+        "fromSchemaId": { "$ref": "#/$defs/identity" },
+        "toSchemaId": { "$ref": "#/$defs/identity" },
+        "workerOperationId": { "$ref": "#/$defs/identity" }
+      }
+    },
+    "interfaces": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["uiBridge", "worker", "data", "connectorJobs"],
+      "properties": {
+        "uiBridge": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["version", "bundlePath"],
+              "properties": {
+                "version": { "const": "mosaic-package-ui-bridge-v1" },
+                "bundlePath": { "$ref": "#/$defs/safePath" }
+              }
+            },
+            { "type": "null" }
+          ]
+        },
+        "worker": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["version", "artifactPath", "operations"],
+              "properties": {
+                "version": { "const": "mosaic-package-worker-v1" },
+                "artifactPath": { "$ref": "#/$defs/safePath" },
+                "operations": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 128,
+                  "items": { "$ref": "#/$defs/operation" }
+                }
+              }
+            },
+            { "type": "null" }
+          ]
+        },
+        "data": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "version",
+            "sourceCodecIdentity",
+            "retainedSourceCodecIdentities",
+            "records",
+            "migrations"
+          ],
+          "properties": {
+            "version": { "const": "mosaic-package-data-v1" },
+            "sourceCodecIdentity": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "retainedSourceCodecIdentities": {
+              "type": "array",
+              "maxItems": 32,
+              "items": { "type": "string", "minLength": 1, "maxLength": 100 }
+            },
+            "records": {
+              "type": "array",
+              "maxItems": 128,
+              "items": { "$ref": "#/$defs/dataRecord" }
+            },
+            "migrations": {
+              "type": "array",
+              "maxItems": 64,
+              "items": { "$ref": "#/$defs/dataMigration" }
+            }
+          }
+        },
+        "connectorJobs": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["version", "operations"],
+              "properties": {
+                "version": { "const": "mosaic-package-connector-job-v1" },
+                "operations": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 128,
+                  "items": { "$ref": "#/$defs/operation" }
+                }
+              }
+            },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+    "capability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "id",
+        "description",
+        "requestedScope",
+        "requestedClassification"
+      ],
+      "properties": {
+        "schemaVersion": { "const": "mosaic-package-capabilities-v1" },
+        "id": {
+          "type": "string",
+          "maxLength": 129,
+          "pattern": "^[a-z][a-z0-9_]{0,63}\\.[a-z][a-z0-9_]{0,63}$"
+        },
+        "description": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "requestedScope": {
+          "enum": ["global", "library", "campaign", "asset", "review"]
+        },
+        "requestedClassification": { "enum": ["standard", "privileged"] }
+      }
+    },
+    "contribution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "id",
+        "kind",
+        "description",
+        "requiredCapabilityId"
+      ],
+      "properties": {
+        "schemaVersion": { "const": "mosaic-package-contributions-v1" },
+        "id": { "$ref": "#/$defs/identity" },
+        "kind": {
+          "enum": [
+            "page",
+            "workspace",
+            "panel",
+            "dialog",
+            "command",
+            "governed-content-type",
+            "read-model",
+            "validator",
+            "completion-target",
+            "output",
+            "artifact-kind",
+            "preview-renderer",
+            "asset-generator",
+            "connector-operation"
+          ]
+        },
+        "description": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "requiredCapabilityId": {
+          "anyOf": [{ "$ref": "#/$defs/identity" }, { "type": "null" }]
+        },
+        "entryPoint": { "$ref": "#/$defs/safePath" },
+        "operationId": { "$ref": "#/$defs/identity" },
+        "inputSchemaId": { "$ref": "#/$defs/identity" },
+        "resultSchemaId": { "$ref": "#/$defs/identity" },
+        "sourceCodecIdentity": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "sourceSchemaId": { "$ref": "#/$defs/identity" },
+        "artifactKind": { "$ref": "#/$defs/identity" },
+        "mediaTypes": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 16,
+          "items": { "type": "string", "minLength": 1, "maxLength": 100 }
+        },
+        "maxBytes": { "type": "integer", "minimum": 1, "maximum": 100000000 },
+        "executionPlane": { "enum": ["worker", "connector-job"] }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": { "enum": ["page", "workspace", "panel", "dialog"] }
+            }
+          },
+          "then": { "required": ["entryPoint"] }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "enum": [
+                  "command",
+                  "read-model",
+                  "validator",
+                  "completion-target",
+                  "output",
+                  "preview-renderer",
+                  "connector-operation"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": ["operationId", "inputSchemaId", "resultSchemaId"]
+          }
+        },
+        {
+          "if": {
+            "properties": { "kind": { "const": "governed-content-type" } }
+          },
+          "then": {
+            "required": ["sourceCodecIdentity", "sourceSchemaId"]
+          }
+        },
+        {
+          "if": {
+            "properties": { "kind": { "const": "artifact-kind" } }
+          },
+          "then": { "required": ["artifactKind", "mediaTypes", "maxBytes"] }
+        },
+        {
+          "if": {
+            "properties": { "kind": { "const": "asset-generator" } }
+          },
+          "then": {
+            "required": [
+              "operationId",
+              "executionPlane",
+              "inputSchemaId",
+              "resultSchemaId"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/lockidynamics/mosaic/blob/main/public/schemas/mosaic-package-roles.schema.json",
+  "title": "Mosaic Integration Package Role Suggestions",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "suggestions"],
+  "properties": {
+    "schemaVersion": { "const": "mosaic-package-roles-v1" },
+    "suggestions": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 3,
+      "allOf": [
+        {
+          "contains": {
+            "type": "object",
+            "required": ["roleType"],
+            "properties": { "roleType": { "const": "builder" } }
+          },
+          "minContains": 0,
+          "maxContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": ["roleType"],
+            "properties": { "roleType": { "const": "editor" } }
+          },
+          "minContains": 0,
+          "maxContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "required": ["roleType"],
+            "properties": { "roleType": { "const": "reviewer" } }
+          },
+          "minContains": 0,
+          "maxContains": 1
+        }
+      ],
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["roleType", "capabilityIds"],
+        "properties": {
+          "roleType": { "enum": ["builder", "editor", "reviewer"] },
+          "capabilityIds": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 64,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "maxLength": 160,
+              "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"
+            }
+          }
+        }
+      }
+    }
+  }
+}

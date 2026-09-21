@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "mosaic-package-roles-v1",
+  "suggestions": [
+    {
+      "roleType": "builder",
+      "capabilityIds": ["reference_package.use"]
+    },
+    {
+      "roleType": "editor",
+      "capabilityIds": ["reference_package.use"]
+    }
+  ]
+}

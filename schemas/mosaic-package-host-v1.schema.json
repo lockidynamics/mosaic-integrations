@@ -1,0 +1,537 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/lockidynamics/mosaic/blob/main/public/schemas/mosaic-package-host-v1.schema.json",
+  "title": "Mosaic Package Host Interface v1 envelopes",
+  "oneOf": [
+    { "$ref": "#/$defs/uiBootstrap" },
+    { "$ref": "#/$defs/uiBridgeRequest" },
+    { "$ref": "#/$defs/uiBridgeResponse" },
+    { "$ref": "#/$defs/workerRequest" },
+    { "$ref": "#/$defs/workerResult" },
+    { "$ref": "#/$defs/dataRequest" },
+    { "$ref": "#/$defs/connectorJob" },
+    { "$ref": "#/$defs/connectorJobResult" }
+  ],
+  "$defs": {
+    "identity": {
+      "type": "string",
+      "maxLength": 160,
+      "pattern": "^[a-z][a-z0-9_]*(?:\\.[a-z][a-z0-9_]*)+$"
+    },
+    "opaqueId": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{7,127}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "diagnostic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "severity", "sourceId", "messageKey"],
+      "properties": {
+        "code": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{0,99}$" },
+        "severity": { "enum": ["info", "warning", "error"] },
+        "sourceId": {
+          "anyOf": [{ "$ref": "#/$defs/opaqueId" }, { "type": "null" }]
+        },
+        "messageKey": { "$ref": "#/$defs/identity" }
+      }
+    },
+    "releaseIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["publisherKey", "packageKey", "version", "releaseDigest"],
+      "properties": {
+        "publisherKey": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,63}$"
+        },
+        "packageKey": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,63}$" },
+        "version": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,14})\\.(0|[1-9][0-9]{0,14})\\.(0|[1-9][0-9]{0,14})$"
+        },
+        "releaseDigest": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "release",
+        "installationRevision",
+        "actor",
+        "library",
+        "campaign",
+        "requestId",
+        "correlationId"
+      ],
+      "properties": {
+        "release": { "$ref": "#/$defs/releaseIdentity" },
+        "installationRevision": { "type": "integer", "minimum": 1 },
+        "actor": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["userId"],
+          "properties": { "userId": { "$ref": "#/$defs/opaqueId" } }
+        },
+        "library": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id"],
+          "properties": { "id": { "$ref": "#/$defs/opaqueId" } }
+        },
+        "campaign": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["id"],
+              "properties": { "id": { "$ref": "#/$defs/opaqueId" } }
+            },
+            { "type": "null" }
+          ]
+        },
+        "requestId": { "$ref": "#/$defs/opaqueId" },
+        "correlationId": { "$ref": "#/$defs/opaqueId" }
+      }
+    },
+    "uiBootstrap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "type",
+        "context",
+        "theme",
+        "tokens",
+        "destinationIds"
+      ],
+      "properties": {
+        "schemaVersion": { "const": "mosaic-package-ui-bridge-v1" },
+        "type": { "const": "mosaic-package-bootstrap" },
+        "context": { "$ref": "#/$defs/context" },
+        "theme": { "enum": ["light", "dark"] },
+        "tokens": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "background",
+            "foreground",
+            "muted",
+            "mutedForeground",
+            "border",
+            "primary",
+            "primaryForeground",
+            "radius",
+            "fontFamily"
+          ],
+          "properties": {
+            "background": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "foreground": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "muted": { "type": "string", "minLength": 1, "maxLength": 200 },
+            "mutedForeground": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "border": { "type": "string", "minLength": 1, "maxLength": 200 },
+            "primary": { "type": "string", "minLength": 1, "maxLength": 200 },
+            "primaryForeground": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "radius": { "type": "string", "minLength": 1, "maxLength": 200 },
+            "fontFamily": { "type": "string", "minLength": 1, "maxLength": 200 }
+          }
+        },
+        "destinationIds": {
+          "type": "array",
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/identity" }
+        }
+      }
+    },
+    "uiBridgeRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "requestId", "operation", "contributionId"],
+      "properties": {
+        "schemaVersion": { "const": "mosaic-package-ui-bridge-v1" },
+        "requestId": { "$ref": "#/$defs/opaqueId" },
+        "operation": {
+          "enum": [
+            "read",
+            "command",
+            "navigate",
+            "present",
+            "invoke-worker",
+            "complete",
+            "generate-asset",
+            "start-job"
+          ]
+        },
+        "contributionId": { "$ref": "#/$defs/identity" },
+        "input": {},
+        "expectedRevision": { "type": "integer", "minimum": 0 },
+        "idempotencyKey": { "$ref": "#/$defs/opaqueId" },
+        "destinationId": { "$ref": "#/$defs/identity" },
+        "parameters": { "type": "object", "maxProperties": 32 },
+        "action": {
+          "enum": ["open-dialog", "toast", "announce", "focus", "asset-picker"]
+        },
+        "operationId": { "$ref": "#/$defs/identity" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "operation": { "const": "read" } } },
+          "then": { "required": ["input"] }
+        },
+        {
+          "if": { "properties": { "operation": { "const": "command" } } },
+          "then": {
+            "required": ["input", "expectedRevision", "idempotencyKey"]
+          }
+        },
+        {
+          "if": { "properties": { "operation": { "const": "navigate" } } },
+          "then": { "required": ["destinationId", "parameters"] }
+        },
+        {
+          "if": { "properties": { "operation": { "const": "present" } } },
+          "then": { "required": ["action", "input"] }
+        },
+        {
+          "if": { "properties": { "operation": { "const": "complete" } } },
+          "then": {
+            "required": ["expectedRevision", "idempotencyKey", "input"]
+          }
+        },
+        {
+          "if": {
+            "properties": { "operation": { "const": "generate-asset" } }
+          },
+          "then": { "required": ["idempotencyKey", "input"] }
+        },
+        {
+          "if": {
+            "properties": {
+              "operation": { "enum": ["invoke-worker", "start-job"] }
+            }
+          },
+          "then": { "required": ["operationId", "idempotencyKey", "input"] }
+        }
+      ]
+    },
+    "uiBridgeResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "requestId", "ok"],
+      "properties": {
+        "schemaVersion": { "const": "mosaic-package-ui-bridge-v1" },
+        "requestId": { "$ref": "#/$defs/opaqueId" },
+        "ok": { "type": "boolean" },
+        "result": {},
+        "error": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["code"],
+          "properties": {
+            "code": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{0,99}$" }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "ok": { "const": true } } },
+          "then": { "required": ["result"] }
+        },
+        {
+          "if": { "properties": { "ok": { "const": false } } },
+          "then": { "required": ["error"] }
+        }
+      ]
+    },
+    "workerRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "invocationId",
+        "release",
+        "operationId",
+        "deterministicVersion",
+        "inputSchemaId",
+        "resultSchemaId",
+        "input",
+        "suppliedReads",
+        "limits"
+      ],
+      "properties": {
+        "schemaVersion": { "const": "mosaic-package-worker-v1" },
+        "invocationId": { "$ref": "#/$defs/opaqueId" },
+        "release": { "$ref": "#/$defs/releaseIdentity" },
+        "operationId": { "$ref": "#/$defs/identity" },
+        "deterministicVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "inputSchemaId": { "$ref": "#/$defs/identity" },
+        "resultSchemaId": { "$ref": "#/$defs/identity" },
+        "input": {},
+        "suppliedReads": {
+          "type": "array",
+          "maxItems": 128,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["readId", "value"],
+            "properties": {
+              "readId": { "$ref": "#/$defs/identity" },
+              "value": {}
+            }
+          }
+        },
+        "limits": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "cpuMilliseconds",
+            "wallMilliseconds",
+            "memoryBytes",
+            "stackBytes",
+            "recursionDepth",
+            "inputBytes",
+            "inputDepth",
+            "inputNodes",
+            "outputBytes",
+            "outputDepth",
+            "outputNodes",
+            "diagnostics"
+          ],
+          "properties": {
+            "cpuMilliseconds": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 60000
+            },
+            "wallMilliseconds": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 120000
+            },
+            "memoryBytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000000000
+            },
+            "stackBytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16000000
+            },
+            "recursionDepth": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000
+            },
+            "inputBytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100000000
+            },
+            "inputDepth": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "inputNodes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000000
+            },
+            "outputBytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100000000
+            },
+            "outputDepth": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "outputNodes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000000
+            },
+            "diagnostics": { "type": "integer", "minimum": 1, "maximum": 1000 }
+          }
+        }
+      }
+    },
+    "workerResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "invocationId", "ok"],
+      "properties": {
+        "schemaVersion": { "const": "mosaic-package-worker-v1" },
+        "invocationId": { "$ref": "#/$defs/opaqueId" },
+        "ok": { "type": "boolean" },
+        "result": {},
+        "diagnostics": {
+          "type": "array",
+          "maxItems": 1000,
+          "items": { "$ref": "#/$defs/diagnostic" }
+        },
+        "error": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["code"],
+          "properties": {
+            "code": {
+              "enum": [
+                "INVALID_INPUT",
+                "LIMIT_EXCEEDED",
+                "TIMED_OUT",
+                "CANCELLED",
+                "INVALID_RESULT",
+                "EXECUTION_FAILED"
+              ]
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "ok": { "const": true } } },
+          "then": { "required": ["result", "diagnostics"] }
+        },
+        {
+          "if": { "properties": { "ok": { "const": false } } },
+          "then": { "required": ["error"] }
+        }
+      ]
+    },
+    "dataRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "context", "operation"],
+      "properties": {
+        "schemaVersion": { "const": "mosaic-package-data-v1" },
+        "context": { "$ref": "#/$defs/context" },
+        "operation": { "enum": ["read", "query", "command", "migrate"] },
+        "recordTypeId": { "$ref": "#/$defs/identity" },
+        "input": {},
+        "expectedRevision": { "type": "integer", "minimum": 0 },
+        "idempotencyKey": { "$ref": "#/$defs/opaqueId" },
+        "migrationId": { "$ref": "#/$defs/identity" },
+        "fromSchemaId": { "$ref": "#/$defs/identity" },
+        "toSchemaId": { "$ref": "#/$defs/identity" },
+        "records": { "type": "array", "maxItems": 1000 }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "operation": { "enum": ["read", "query"] } }
+          },
+          "then": { "required": ["recordTypeId", "input"] }
+        },
+        {
+          "if": { "properties": { "operation": { "const": "command" } } },
+          "then": {
+            "required": [
+              "recordTypeId",
+              "input",
+              "expectedRevision",
+              "idempotencyKey"
+            ]
+          }
+        },
+        {
+          "if": { "properties": { "operation": { "const": "migrate" } } },
+          "then": {
+            "required": ["migrationId", "fromSchemaId", "toSchemaId", "records"]
+          }
+        }
+      ]
+    },
+    "connectorJob": {
+      "type": "object",
+      "$comment": "The executable decoder additionally requires attempt <= maximumAttempts.",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "jobId",
+        "context",
+        "connectorBindingId",
+        "configurationChecksum",
+        "operationId",
+        "idempotencyKey",
+        "attempt",
+        "maximumAttempts",
+        "credentialClass",
+        "input"
+      ],
+      "properties": {
+        "schemaVersion": { "const": "mosaic-package-connector-job-v1" },
+        "jobId": { "$ref": "#/$defs/opaqueId" },
+        "context": { "$ref": "#/$defs/context" },
+        "connectorBindingId": { "$ref": "#/$defs/opaqueId" },
+        "configurationChecksum": { "$ref": "#/$defs/sha256" },
+        "operationId": { "$ref": "#/$defs/identity" },
+        "idempotencyKey": { "$ref": "#/$defs/opaqueId" },
+        "attempt": { "type": "integer", "minimum": 1, "maximum": 100 },
+        "maximumAttempts": { "type": "integer", "minimum": 1, "maximum": 100 },
+        "credentialClass": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,63}$"
+        },
+        "input": {}
+      }
+    },
+    "connectorJobResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "jobId", "ok"],
+      "properties": {
+        "schemaVersion": { "const": "mosaic-package-connector-job-v1" },
+        "jobId": { "$ref": "#/$defs/opaqueId" },
+        "ok": { "type": "boolean" },
+        "result": {},
+        "error": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["code", "retryable"],
+          "properties": {
+            "code": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{0,99}$" },
+            "retryable": { "type": "boolean" }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "ok": { "const": true } } },
+          "then": { "required": ["result"] }
+        },
+        {
+          "if": { "properties": { "ok": { "const": false } } },
+          "then": { "required": ["error"] }
+        }
+      ]
+    }
+  }
+}

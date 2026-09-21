@@ -1,0 +1,10 @@
+{
+  "name": "Package Host Reference",
+  "version": "1.0.1",
+  "description": "Synthetic executable package proving Mosaic Package Host isolation and governance.",
+  "homepage": "https://github.com/lockidynamics/mosaic-integrations/tree/main/packages/package-host-reference",
+  "logo": "logo.svg",
+  "mosaicVersion": "0.0.1",
+  "slug": "reference-package",
+  "category": "workflow"
+}

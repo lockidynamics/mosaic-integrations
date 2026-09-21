@@ -1,0 +1,199 @@
+{
+  "$schema": "../../schemas/mosaic-package-release-v2.schema.json",
+  "schemaVersion": "mosaic-package-release-v2",
+  "publisherKey": "lockidynamics",
+  "packageKey": "reference_package",
+  "catalogSlug": "reference-package",
+  "version": "1.0.1",
+  "releaseDigest": "sha256:b9dc05cd7a2c7afbb62ae12e85e3e6161317fdd42e8472a23cfd9d2e323c72e7",
+  "hostContract": "mosaic-package-host-v1",
+  "mosaicCompatibility": { "minimumVersion": "0.0.1", "maximumVersion": null },
+  "artifacts": [
+    {
+      "path": "dist/workspace.html",
+      "kind": "ui",
+      "mediaType": "text/html",
+      "byteSize": 14592,
+      "digest": "sha256:91521a042f7af6e442ae149998362379791f6ae888dd2d8c51bd0deff2607091"
+    },
+    {
+      "path": "dist/worker.js",
+      "kind": "worker",
+      "mediaType": "text/javascript",
+      "byteSize": 918,
+      "digest": "sha256:5ed5094bcd3b884b628644eee76220910fb20108f20788ce55e635afeecc467e"
+    },
+    {
+      "path": "schemas/reference_package.note_v1.schema.json",
+      "kind": "schema",
+      "mediaType": "application/schema+json",
+      "byteSize": 217,
+      "digest": "sha256:ff34159827ba7ecf135e2cf56b1149bd730942a3644f13bded4b2b672bef5123"
+    },
+    {
+      "path": "schemas/reference_package.validation_result_v1.schema.json",
+      "kind": "schema",
+      "mediaType": "application/schema+json",
+      "byteSize": 561,
+      "digest": "sha256:71374303b54d3e3bc327d63883790fddd560a7f01a40a04e1b17f61913bc870c"
+    },
+    {
+      "path": "schemas/reference_package.artifact_result_v1.schema.json",
+      "kind": "schema",
+      "mediaType": "application/schema+json",
+      "byteSize": 593,
+      "digest": "sha256:52f803e456cb6650909d195ec4d1ecceb0697c1427158eb70d7b6ec6bf79b176"
+    }
+  ],
+  "interfaces": {
+    "uiBridge": {
+      "version": "mosaic-package-ui-bridge-v1",
+      "bundlePath": "dist/workspace.html"
+    },
+    "worker": {
+      "version": "mosaic-package-worker-v1",
+      "artifactPath": "dist/worker.js",
+      "operations": [
+        {
+          "id": "reference_package.validate_note",
+          "inputSchemaId": "reference_package.note_v1",
+          "resultSchemaId": "reference_package.validation_result_v1"
+        },
+        {
+          "id": "reference_package.output_note",
+          "inputSchemaId": "reference_package.note_v1",
+          "resultSchemaId": "reference_package.artifact_result_v1"
+        },
+        {
+          "id": "reference_package.generate_asset",
+          "inputSchemaId": "reference_package.note_v1",
+          "resultSchemaId": "reference_package.artifact_result_v1"
+        }
+      ]
+    },
+    "data": {
+      "version": "mosaic-package-data-v1",
+      "sourceCodecIdentity": "reference-package-source-v1",
+      "retainedSourceCodecIdentities": [],
+      "records": [
+        {
+          "id": "reference_package.note",
+          "schemaId": "reference_package.note_v1",
+          "mode": "working-record",
+          "maxBytes": 4096
+        }
+      ],
+      "migrations": []
+    },
+    "connectorJobs": null
+  },
+  "capabilities": [
+    {
+      "schemaVersion": "mosaic-package-capabilities-v1",
+      "id": "reference_package.use",
+      "description": "Use the executable reference package in a Library.",
+      "requestedScope": "library",
+      "requestedClassification": "standard"
+    }
+  ],
+  "contributions": [
+    {
+      "schemaVersion": "mosaic-package-contributions-v1",
+      "id": "reference_package.workspace",
+      "kind": "workspace",
+      "description": "Reference package workspace",
+      "requiredCapabilityId": null,
+      "entryPoint": "dist/workspace.html"
+    },
+    {
+      "schemaVersion": "mosaic-package-contributions-v1",
+      "id": "reference_package.library_context",
+      "kind": "read-model",
+      "description": "Read the active Library context through the host.",
+      "requiredCapabilityId": null,
+      "operationId": "mosaic.host.read_library",
+      "inputSchemaId": "mosaic.host.read_library_input_v1",
+      "resultSchemaId": "mosaic.host.read_library_result_v1"
+    },
+    {
+      "schemaVersion": "mosaic-package-contributions-v1",
+      "id": "reference_package.note_content",
+      "kind": "governed-content-type",
+      "description": "A small governed note used to prove host-owned lifecycle behavior.",
+      "requiredCapabilityId": "reference_package.use",
+      "sourceCodecIdentity": "reference-package-source-v1",
+      "sourceSchemaId": "reference_package.note_v1"
+    },
+    {
+      "schemaVersion": "mosaic-package-contributions-v1",
+      "id": "reference_package.note_read",
+      "kind": "read-model",
+      "description": "Read one Library-scoped reference note.",
+      "requiredCapabilityId": "reference_package.use",
+      "operationId": "mosaic.host.package_data_read",
+      "inputSchemaId": "mosaic.host.package_data_read_input_v1",
+      "resultSchemaId": "mosaic.host.package_data_read_result_v1"
+    },
+    {
+      "schemaVersion": "mosaic-package-contributions-v1",
+      "id": "reference_package.note_command",
+      "kind": "command",
+      "description": "Write one Library-scoped reference note with CAS.",
+      "requiredCapabilityId": "reference_package.use",
+      "operationId": "mosaic.host.package_data_command",
+      "inputSchemaId": "mosaic.host.package_data_command_input_v1",
+      "resultSchemaId": "mosaic.host.package_data_command_result_v1"
+    },
+    {
+      "schemaVersion": "mosaic-package-contributions-v1",
+      "id": "reference_package.note_validator",
+      "kind": "validator",
+      "description": "Validate a reference note in the restricted Worker.",
+      "requiredCapabilityId": "reference_package.use",
+      "operationId": "reference_package.validate_note",
+      "inputSchemaId": "reference_package.note_v1",
+      "resultSchemaId": "reference_package.validation_result_v1"
+    },
+    {
+      "schemaVersion": "mosaic-package-contributions-v1",
+      "id": "reference_package.note_output",
+      "kind": "output",
+      "description": "Produce deterministic reference-note bytes.",
+      "requiredCapabilityId": "reference_package.use",
+      "operationId": "reference_package.output_note",
+      "inputSchemaId": "reference_package.note_v1",
+      "resultSchemaId": "reference_package.artifact_result_v1"
+    },
+    {
+      "schemaVersion": "mosaic-package-contributions-v1",
+      "id": "reference_package.note_text_artifact",
+      "kind": "artifact-kind",
+      "description": "Frozen reference-note output.",
+      "requiredCapabilityId": "reference_package.use",
+      "artifactKind": "reference_package.note_text",
+      "mediaTypes": ["text/plain; charset=utf-8"],
+      "maxBytes": 4096
+    },
+    {
+      "schemaVersion": "mosaic-package-contributions-v1",
+      "id": "reference_package.asset_generator",
+      "kind": "asset-generator",
+      "description": "Generate a bounded synthetic PNG through the Worker.",
+      "requiredCapabilityId": "reference_package.use",
+      "operationId": "reference_package.generate_asset",
+      "executionPlane": "worker",
+      "inputSchemaId": "reference_package.note_v1",
+      "resultSchemaId": "reference_package.artifact_result_v1"
+    },
+    {
+      "schemaVersion": "mosaic-package-contributions-v1",
+      "id": "reference_package.generated_image_artifact",
+      "kind": "artifact-kind",
+      "description": "Generated reference PNG.",
+      "requiredCapabilityId": "reference_package.use",
+      "artifactKind": "reference_package.generated_image",
+      "mediaTypes": ["image/png"],
+      "maxBytes": 1048576
+    }
+  ]
+}

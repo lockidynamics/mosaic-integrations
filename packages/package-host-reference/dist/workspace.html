@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Package Host Reference</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: var(
+          --mosaic-font-family,
+          ui-sans-serif,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif
+        );
+        background: var(--mosaic-background, #fff);
+        color: var(--mosaic-foreground, #111);
+      }
+      :root[data-theme="dark"] {
+        color-scheme: dark;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--mosaic-background, #fff);
+        color: var(--mosaic-foreground, #111);
+      }
+      main {
+        max-width: 64rem;
+        margin: 0 auto;
+        display: grid;
+        gap: 2rem;
+        padding: clamp(1.25rem, 4vw, 3rem);
+      }
+      h1,
+      h2,
+      p {
+        margin: 0;
+      }
+      h1 {
+        font-size: clamp(1.5rem, 3vw, 2rem);
+        line-height: 1.15;
+        letter-spacing: -0.025em;
+      }
+      h2 {
+        font-size: 1rem;
+      }
+      .intro {
+        display: flex;
+        align-items: start;
+        justify-content: space-between;
+        gap: 1.5rem;
+      }
+      .intro-copy {
+        display: grid;
+        gap: 0.5rem;
+      }
+      .description,
+      .help,
+      .status {
+        color: var(--mosaic-muted-foreground, #667085);
+        font-size: 0.875rem;
+        line-height: 1.5;
+      }
+      .library {
+        flex: none;
+        border-radius: 999px;
+        background: var(--mosaic-muted, #f4f4f5);
+        padding: 0.45rem 0.75rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+      .panel {
+        border: 1px solid var(--mosaic-border, #ddd);
+        border-radius: var(--mosaic-radius, 0.75rem);
+        padding: clamp(1rem, 3vw, 1.5rem);
+        background: var(--mosaic-background, #fff);
+      }
+      .field {
+        display: grid;
+        gap: 0.5rem;
+        margin-top: 1.25rem;
+      }
+      label {
+        font-size: 0.875rem;
+        font-weight: 600;
+      }
+      input {
+        width: 100%;
+        min-height: 2.5rem;
+        border: 1px solid var(--mosaic-border, #bbb);
+        border-radius: var(--mosaic-radius, 0.75rem);
+        padding: 0.65rem 0.8rem;
+        background: var(--mosaic-background, #fff);
+        color: var(--mosaic-foreground, #111);
+        font: inherit;
+        outline: none;
+      }
+      input:focus-visible,
+      button:focus-visible {
+        outline: 3px solid color-mix(in srgb, var(--mosaic-primary, #16803b) 30%, transparent);
+        outline-offset: 2px;
+      }
+      .note-footer {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        margin-top: 1.25rem;
+      }
+      .tools {
+        display: grid;
+        gap: 1rem;
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      button {
+        border: 1px solid var(--mosaic-border, #bbb);
+        border-radius: 999px;
+        min-height: 2.25rem;
+        padding: 0.5rem 0.85rem;
+        background: var(--mosaic-background, #fff);
+        color: var(--mosaic-foreground, #111);
+        font: inherit;
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      button:hover:not(:disabled) {
+        background: var(--mosaic-muted, #f4f4f5);
+      }
+      button.primary {
+        border-color: var(--mosaic-primary, #111);
+        background: var(--mosaic-primary, #111);
+        color: var(--mosaic-primary-foreground, #fff);
+      }
+      button.primary:hover:not(:disabled) {
+        filter: brightness(0.92);
+      }
+      button:disabled,
+      input:disabled {
+        cursor: not-allowed;
+        opacity: 0.55;
+      }
+      [role="alert"] {
+        color: #b42318;
+        font-size: 0.875rem;
+      }
+      @media (max-width: 40rem) {
+        .intro {
+          display: grid;
+        }
+        .library {
+          justify-self: start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header class="intro">
+        <div class="intro-copy">
+          <h1>Reference note</h1>
+          <p class="description">
+            Save a Library-specific note, validate it, and create package
+            outputs.
+          </p>
+        </div>
+        <p class="library" id="context" aria-live="polite">
+          Connecting…
+        </p>
+      </header>
+      <p id="error" role="alert" hidden></p>
+      <section class="panel" aria-labelledby="note-title">
+        <h2 id="note-title">Note details</h2>
+        <div class="field">
+          <label for="title">Title</label>
+          <input id="title" value="Mosaic Package Host" disabled />
+          <p class="help">Saved separately for the active Library.</p>
+        </div>
+        <div class="note-footer">
+          <p class="status" id="note-status" aria-live="polite">Not saved</p>
+          <button class="primary" id="confirm" disabled>Save note</button>
+        </div>
+      </section>
+      <section class="tools" aria-labelledby="tools-title">
+        <div>
+          <h2 id="tools-title">Package actions</h2>
+          <p class="help">Validate the note or create downloadable output.</p>
+        </div>
+        <div class="actions">
+          <button id="validate" disabled>Validate note</button>
+          <button id="complete" disabled>Complete note</button>
+          <button id="generate" disabled>Generate image</button>
+          <button id="campaigns" disabled>Open Campaigns</button>
+          <button id="dialog" disabled>Open dialog</button>
+          <button id="toast" disabled>Show notification</button>
+        </div>
+      </section>
+    </main>
+    <script>
+      (() => {
+        const pending = new Map()
+        let bridge
+        let context
+        let noteRevision = 0
+
+        function id(prefix) {
+          return prefix + "_" + crypto.randomUUID()
+        }
+
+        function request(operation) {
+          const requestId = id("request")
+          return new Promise((resolve, reject) => {
+            pending.set(requestId, { resolve, reject })
+            bridge.postMessage({
+              schemaVersion: "mosaic-package-ui-bridge-v1",
+              requestId,
+              ...operation,
+            })
+          })
+        }
+
+        function showError(error) {
+          const node = document.querySelector("#error")
+          node.textContent = error instanceof Error ? error.message : String(error)
+          node.hidden = false
+        }
+
+        function enableActions() {
+          for (const control of document.querySelectorAll("button, input"))
+            control.disabled = false
+          document.querySelector("#confirm").focus()
+        }
+
+        addEventListener(
+          "message",
+          async (event) => {
+            if (
+              event.source !== parent ||
+              event.ports.length !== 1 ||
+              event.data?.type !== "mosaic-package-bootstrap" ||
+              event.data?.schemaVersion !== "mosaic-package-ui-bridge-v1"
+            )
+              return
+            bridge = event.ports[0]
+            context = event.data.context
+            document.documentElement.dataset.theme = event.data.theme
+            for (const [name, value] of Object.entries(event.data.tokens || {}))
+              document.documentElement.style.setProperty(
+                "--mosaic-" +
+                  name.replace(/[A-Z]/g, (letter) => "-" + letter.toLowerCase()),
+                value
+              )
+            bridge.onmessage = ({ data }) => {
+              const deferred = pending.get(data?.requestId)
+              if (!deferred) return
+              pending.delete(data.requestId)
+              if (data.ok) deferred.resolve(data.result)
+              else deferred.reject(new Error(data.error?.code || "PACKAGE_UI_ERROR"))
+            }
+            bridge.start()
+            try {
+              const libraryResult = await request({
+                operation: "read",
+                contributionId: "reference_package.library_context",
+                input: { kind: "context" },
+              })
+              const savedNote = await request({
+                operation: "read",
+                contributionId: "reference_package.note_read",
+                input: {
+                  recordTypeId: "reference_package.note",
+                  recordId: "reference-note",
+                },
+              })
+              document.querySelector("#context").textContent =
+                libraryResult.library.name
+              if (savedNote) {
+                noteRevision = savedNote.revision
+                document.querySelector("#title").value = savedNote.value.title
+                document.querySelector("#note-status").textContent =
+                  "Saved revision " + noteRevision
+              }
+              enableActions()
+            } catch (error) {
+              showError(error)
+            }
+          },
+          { once: true }
+        )
+
+        document.querySelector("#confirm").addEventListener("click", async () => {
+          const button = document.querySelector("#confirm")
+          button.disabled = true
+          button.textContent = "Saving…"
+          button.setAttribute("aria-busy", "true")
+          try {
+            await request({
+              operation: "command",
+              contributionId: "reference_package.note_command",
+              expectedRevision: noteRevision,
+              idempotencyKey: id("command"),
+              input: {
+                recordTypeId: "reference_package.note",
+                recordId: "reference-note",
+                value: { title: document.querySelector("#title").value },
+              },
+            })
+            const saved = await request({
+              operation: "read",
+              contributionId: "reference_package.note_read",
+              input: {
+                recordTypeId: "reference_package.note",
+                recordId: "reference-note",
+              },
+            })
+            noteRevision = saved.revision
+            document.querySelector("#note-status").textContent =
+              "Saved revision " + noteRevision
+            await request({
+              operation: "present",
+              contributionId: "mosaic.host_presentation",
+              action: "announce",
+                input: { message: "Reference package note saved" },
+            })
+          } catch (error) {
+            showError(error)
+          } finally {
+            button.disabled = false
+            button.textContent = "Save note"
+            button.removeAttribute("aria-busy")
+          }
+        })
+
+        document.querySelector("#validate").addEventListener("click", async () => {
+          try {
+            const result = await request({
+              operation: "invoke-worker",
+              contributionId: "reference_package.note_validator",
+              operationId: "reference_package.validate_note",
+              idempotencyKey: id("worker"),
+              input: { title: document.querySelector("#title").value },
+            })
+            document.querySelector("#note-status").textContent =
+              result.diagnostics.length === 0
+                ? "Worker validation passed"
+                : result.diagnostics[0].message
+          } catch (error) {
+            showError(error)
+          }
+        })
+
+        document.querySelector("#complete").addEventListener("click", async () => {
+          if (noteRevision < 1) {
+            showError(new Error("Save the note before completing it."))
+            return
+          }
+          try {
+            const result = await request({
+              operation: "complete",
+              contributionId: "reference_package.note_output",
+              expectedRevision: noteRevision,
+              idempotencyKey: id("complete"),
+              input: {
+                recordTypeId: "reference_package.note",
+                recordId: "reference-note",
+                dataContributionId: "reference_package.note_command",
+                validatorContributionId: "reference_package.note_validator",
+                artifactContributionId: "reference_package.note_text_artifact",
+              },
+            })
+            document.querySelector("#note-status").textContent =
+              result.completion.outcome === "completed"
+                ? "Mosaic Complete succeeded. Download the frozen artifact below."
+                : "Mosaic Complete was blocked."
+          } catch (error) {
+            showError(error)
+          }
+        })
+
+        document.querySelector("#generate").addEventListener("click", async () => {
+          try {
+            await request({
+              operation: "generate-asset",
+              contributionId: "reference_package.asset_generator",
+              idempotencyKey: id("generate"),
+              input: {
+                artifactContributionId: "reference_package.generated_image_artifact",
+                value: { title: document.querySelector("#title").value },
+              },
+            })
+            document.querySelector("#note-status").textContent =
+              "Mosaic stored the generated image. Download it below."
+          } catch (error) {
+            showError(error)
+          }
+        })
+
+        document.querySelector("#campaigns").addEventListener("click", () =>
+          request({
+            operation: "navigate",
+            contributionId: "mosaic.host_navigation",
+            destinationId: "mosaic.campaigns",
+            parameters: {},
+          }).catch(showError)
+        )
+
+        document.querySelector("#dialog").addEventListener("click", () =>
+          request({
+            operation: "present",
+            contributionId: "mosaic.host_presentation",
+            action: "open-dialog",
+            input: {
+              title: "Host-owned dialog",
+              description:
+                "Mosaic owns focus, keyboard, and assistive-technology behavior.",
+            },
+          }).catch(showError)
+        )
+
+        document.querySelector("#toast").addEventListener("click", () =>
+          request({
+            operation: "present",
+            contributionId: "mosaic.host_presentation",
+            action: "toast",
+            input: {
+              title: "Reference package",
+              description: "This toast was rendered by Mosaic.",
+            },
+          }).catch(showError)
+        )
+      })()
+    </script>
+  </body>
+</html>
