@@ -1,23 +1,43 @@
-# FlatPack
+<div align="center">
+  <img src="logo.png" alt="FlatPack" width="180" />
+  <h1>FlatPack</h1>
+  <p>Responsive visual assets for Mosaic Email.</p>
+</div>
 
-FlatPack is Mosaic's first native package for governed Email output behavior.
-It declares the `email-raster-region` contract and returns a deterministic,
-host-validated raster plan for each canonical resolved source state and all
-four required presentation variants: desktop light, desktop dark, mobile
-light, and mobile dark.
+FlatPack gives Mosaic authors a polished way to use responsive image treatments
+inside an Email without giving up the familiar Builder experience. It is made
+for campaigns that need art-directed desktop and mobile presentations, light
+and dark appearance variants, personalization, links, and accessible image
+text.
 
-FlatPack does not render HTML, access Mosaic data, evaluate recipients, fetch
-resources, or write artifacts. Mosaic owns source resolution, personalization,
-fonts, rendering, generated-byte persistence, Email Package assembly, Review,
-Complete, and release activation. The restricted Worker only validates and
-returns the bounded plan described by the versioned schemas.
+## What you can do
 
-Drafts and Review retain native Module content and saved FlatPack settings.
-Only fixed Email Complete generates image assets for the final HTML Email Package;
-completed previews/downloads consume those immutable bytes. Draft Preview and
-PDF/JPG projections do not generate FlatPack assets.
+- Convert eligible Email modules into FlatPack visual assets.
+- Keep each variation’s image text and link settings independent when needed.
+- Preserve the module’s normal layout controls, including spacing, alignment,
+  colors, backgrounds, and rounding.
+- Include FlatPack modules in groups and continue editing the surrounding Email
+  normally.
+- Complete the Email and receive the generated assets in the existing Mosaic
+  Email Package.
 
-The release is immutable. Update artifact byte sizes, SHA-256 values, and the
-release digest together when publishing a new version. There are no install
-scripts, build hooks, dependencies, network calls, filesystem access, secrets,
-database access, or package-owned server/browser code.
+## How it works in Mosaic
+
+An administrator installs FlatPack and enables it for a Library. Authors use
+the FlatPack section in the existing module properties panel. FlatPack assets
+are generated when the Email is completed, so normal drafting, previewing, and
+reviewing remain focused on the authored Email.
+
+## Screenshots
+
+Screenshots can be added here as the customer-facing experience evolves:
+
+<!--
+![FlatPack in the Email Builder](screenshots/builder.png)
+![FlatPack variation settings](screenshots/variation-settings.png)
+![FlatPack completed Email output](screenshots/completed-output.png)
+-->
+
+## Learn more
+
+FlatPack is available from the official [Mosaic Integrations repository](https://github.com/lockidynamics/mosaic-integrations). Add the repository in Mosaic, then install and enable FlatPack from **Admin → Settings → Integrations**.

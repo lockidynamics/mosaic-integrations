@@ -1,22 +1,38 @@
-# Mosaic Integrations
+<div align="center">
+  <img src="packages/flatpack/logo.png" alt="FlatPack" width="160" />
+  <h1>FlatPack</h1>
+  <p>Responsive, production-ready image treatments for Mosaic Email.</p>
+</div>
 
 Official first-party Packages for [Mosaic](https://github.com/lockidynamics/mosaic).
-This repository is a package catalog, not one deployable package: registering
-its root URL makes valid Packages discoverable, while an authorized Mosaic
-Admin installs, enables, updates, disables, quarantines, and rolls back each
-Package independently.
+This repository is the home of Mosaic’s official package catalog. Packages are
+installed and enabled independently by Mosaic administrators.
 
 ## Packages
 
 | Package | Identity | Status |
 | --- | --- | --- |
-| [FlatPack](packages/flatpack) | `lockidynamics/flatpack` | First-party native email output package |
+| [FlatPack](packages/flatpack) | `lockidynamics/flatpack` | Responsive Email image treatments |
 
-Official Packages belong in `packages/<catalog-slug>/`. Every package
-owns its manifest, immutable release descriptor, prebuilt artifacts, schemas,
-role suggestions, changelog, tests, and release history. Package identity is
-`publisherKey + packageKey + version + releaseDigest`; repository paths are
-discovery locations, not runtime or authorization identity.
+## FlatPack
+
+FlatPack helps teams turn selected Email modules into responsive visual assets
+while preserving the authoring experience inside Mosaic. Desktop and mobile
+layouts, light and dark appearances, personalization, links, and accessibility
+text remain part of the governed Email output.
+
+In Mosaic, an administrator installs FlatPack and enables it for a Library.
+Authors then configure FlatPack on eligible modules in the Email Builder. The
+finished Email Package includes the generated assets when the Email is
+completed.
+
+See the [FlatPack package page](packages/flatpack) for customer-facing details.
+
+## For package developers
+
+Official Packages belong in `packages/<catalog-slug>/`. Each package includes
+its manifest, immutable release descriptor, prebuilt artifacts, schemas, role
+suggestions, changelog, tests, and release history. See [Adding a Package](docs/ADDING-A-PACKAGE.md), [Contributing](CONTRIBUTING.md), and [Releasing](docs/RELEASING.md).
 
 ## Validate
 
@@ -31,22 +47,4 @@ The validator discovers every `packages/*/mosaic-package.json`, checks unique
 catalog and package identities, validates immutable artifact bytes and digests,
 recomputes each release digest, and verifies optional role suggestions.
 
-## Trust model
-
-Repository registration never installs or activates every package. It records
-one commit-pinned catalog snapshot. Each Package Release is separately staged
-and installed, each Library binding is explicit, and Mosaic remains authoritative
-for authentication, authorization, capability grants and denials, Library
-isolation, Review, Complete, audit, artifact validation, and atomic activation.
-
-Native Package surfaces are closed data models rendered by Mosaic with its
-shared components. Packages contribute no React, HTML, CSS, callbacks, routes,
-or host DOM access. A sandboxed frame and typed UI Bridge remain available only
-for explicit `sandbox-workspace` contributions. Deterministic code runs only in
-the resource-limited Worker. Provider, network, and AI behavior runs only
-through host-mediated Connector jobs. Packages receive no ambient filesystem,
-network, environment, session, secret, database, Prisma, SQL, or server-action
-access.
-
-See [Contributing](CONTRIBUTING.md), [Releasing](docs/RELEASING.md), and
-[Security](SECURITY.md).
+See [Security](SECURITY.md) for repository and package safety guidance.
