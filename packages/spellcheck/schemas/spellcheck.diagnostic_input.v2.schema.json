@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "sources",
+    "packageState"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "mosaic-text-diagnostics-input-v2"
+    },
+    "sources": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "sourceId",
+          "revision",
+          "text"
+        ],
+        "properties": {
+          "sourceId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024
+          },
+          "revision": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 1000000
+          }
+        }
+      }
+    },
+    "packageState": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "schemaVersion",
+            "value"
+          ],
+          "properties": {
+            "schemaVersion": {
+              "const": "spellcheck.document.v1"
+            },
+            "value": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "locale"
+              ],
+              "properties": {
+                "locale": {
+                  "enum": [
+                    "en-US",
+                    "es-ES"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

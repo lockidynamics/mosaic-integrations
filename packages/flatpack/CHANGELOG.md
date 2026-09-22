@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.1] - 2026-09-22
+
+### Changed
+
+- Declare FlatPack-owned completion copy for raster Worker and output-plan
+  failures. Mosaic continues to own renderer, resource, storage, and artifact
+  failures. Requires Mosaic 0.0.2; no artifact or stored-data migration.
+
 ## [1.1.0] - 2026-09-22
 
 ### Changed

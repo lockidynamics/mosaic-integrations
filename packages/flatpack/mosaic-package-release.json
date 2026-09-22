@@ -4,10 +4,13 @@
   "publisherKey": "lockidynamics",
   "packageKey": "flatpack",
   "catalogSlug": "flatpack",
-  "version": "1.1.0",
-  "releaseDigest": "sha256:98c44273b0ffdad21d14456b37ef5e5cf794bc05182d3fdc6e2b3849ac2883c2",
+  "version": "1.1.1",
+  "releaseDigest": "sha256:d4733c9d3eda00501d88055932dd58366d33216ee74bad1a962b1b06066ec056",
   "hostContract": "mosaic-package-host-v1",
-  "mosaicCompatibility": { "minimumVersion": "0.0.1", "maximumVersion": null },
+  "mosaicCompatibility": {
+    "minimumVersion": "0.0.2",
+    "maximumVersion": null
+  },
   "artifacts": [
     {
       "path": "dist/worker.js",
@@ -80,7 +83,21 @@
       "sourceSchemaId": "flatpack.email_raster_source_v1",
       "operationId": "flatpack.rasterize_region",
       "inputSchemaId": "flatpack.email_raster_plan_request_v2",
-      "resultSchemaId": "flatpack.email_raster_plan_v2"
+      "resultSchemaId": "flatpack.email_raster_plan_v2",
+      "completion": {
+        "label": "FlatPack",
+        "stageLabel": "Build image output",
+        "reasons": [
+          {
+            "code": "EMAIL_RASTER_WORKER_FAILED",
+            "message": "FlatPack could not prepare the image output plan. Review the FlatPack group or ask an Admin to update FlatPack."
+          },
+          {
+            "code": "EMAIL_RASTER_WORKER_PLAN_INVALID",
+            "message": "FlatPack returned an invalid image output plan. Ask an Admin to update FlatPack before completing."
+          }
+        ]
+      }
     }
   ]
 }

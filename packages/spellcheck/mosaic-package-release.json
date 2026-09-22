@@ -1,0 +1,612 @@
+{
+  "$schema": "../../schemas/mosaic-package-release-v2.schema.json",
+  "schemaVersion": "mosaic-package-release-v2",
+  "publisherKey": "lockidynamics",
+  "packageKey": "spellcheck",
+  "catalogSlug": "spellcheck",
+  "version": "0.2.0",
+  "releaseDigest": "sha256:ab0184b3468ce02a20540eb380e6a50fa279bf80dc2e1277668de76fad9ff299",
+  "hostContract": "mosaic-package-host-v1",
+  "mosaicCompatibility": {
+    "minimumVersion": "0.0.2",
+    "maximumVersion": null
+  },
+  "artifacts": [
+    {
+      "path": "dist/worker.js",
+      "kind": "worker",
+      "mediaType": "text/javascript",
+      "byteSize": 26600,
+      "digest": "sha256:4410617e8c86f01e7608e7af78eae0b9f1bbc0d4f2a1c69dc072f0120be330df"
+    },
+    {
+      "path": "schemas/spellcheck.diagnostic_input.v2.schema.json",
+      "kind": "schema",
+      "mediaType": "application/schema+json",
+      "byteSize": 1715,
+      "digest": "sha256:d9890d6e0b251d536aad9e89d2f98813bf129098bfb40a4e0c462e1eb03ea11f"
+    },
+    {
+      "path": "schemas/spellcheck.diagnostic_result.v2.schema.json",
+      "kind": "schema",
+      "mediaType": "application/schema+json",
+      "byteSize": 1736,
+      "digest": "sha256:92d8ba8a2ddef3b6115cb394a2c0700e2a0d1bef18157ea8732e1c503b30a9bb"
+    },
+    {
+      "path": "schemas/spellcheck.action_input.v1.schema.json",
+      "kind": "schema",
+      "mediaType": "application/schema+json",
+      "byteSize": 2175,
+      "digest": "sha256:c661e2900c382dc939125d6deb4379565c477debfadb61abdc2ee369f292c295"
+    },
+    {
+      "path": "schemas/spellcheck.model_input.v1.schema.json",
+      "kind": "schema",
+      "mediaType": "application/schema+json",
+      "byteSize": 375,
+      "digest": "sha256:d3d4eb7de844a4508a53e5d53bae8173ea391ade0491324dd18c39f3cf9b455b"
+    },
+    {
+      "path": "schemas/spellcheck.native_command.v1.schema.json",
+      "kind": "schema",
+      "mediaType": "application/schema+json",
+      "byteSize": 4970,
+      "digest": "sha256:fded2b3517309fc16444d8cdeef336c55a1797b2c1e706f46ba9f80a3db30651"
+    },
+    {
+      "path": "schemas/spellcheck.native_model.v2.schema.json",
+      "kind": "schema",
+      "mediaType": "application/schema+json",
+      "byteSize": 7521,
+      "digest": "sha256:55a198c6c3c10f497b45f10d0b2092106f00a244e81f8d0f3a7e4ba917dc957c"
+    },
+    {
+      "path": "schemas/spellcheck.command_result.v1.schema.json",
+      "kind": "schema",
+      "mediaType": "application/schema+json",
+      "byteSize": 4674,
+      "digest": "sha256:f885b470c712b5ae8b5203222f7db7e309c85997e34d50b075c6a1457e15f2c1"
+    },
+    {
+      "path": "schemas/spellcheck.dictionary_entry.v1.schema.json",
+      "kind": "schema",
+      "mediaType": "application/schema+json",
+      "byteSize": 566,
+      "digest": "sha256:2d507be496a87fdae6a7b900063e45110a0c82d8b9094f2ef0c8109bad359c3d"
+    },
+    {
+      "path": "schemas/spellcheck.library_policy.v1.schema.json",
+      "kind": "schema",
+      "mediaType": "application/schema+json",
+      "byteSize": 882,
+      "digest": "sha256:0e4dbbc7c28f41f88d14341deb2a064e840ce6b8a8c442aeddead7bad28387a8"
+    },
+    {
+      "path": "schemas/spellcheck.global_policy.v1.schema.json",
+      "kind": "schema",
+      "mediaType": "application/schema+json",
+      "byteSize": 332,
+      "digest": "sha256:e4b4d383c0d6dd8125f527a8b3b5fc8e3880185a783948ac7508fe6667971df6"
+    },
+    {
+      "path": "resources/spellcheck.en_us.aff",
+      "kind": "data",
+      "mediaType": "text/plain",
+      "byteSize": 3086,
+      "digest": "sha256:8ae1f19d4840d957728ad90555d5a8dff6cc5c046279c95ff0c00fc0a0136c7b"
+    },
+    {
+      "path": "resources/spellcheck.en_us.dic",
+      "kind": "data",
+      "mediaType": "text/plain",
+      "byteSize": 551762,
+      "digest": "sha256:f0b1a234bd178bdd01875b2a392a9647f888b8fe879f79c52aae62c2759b3647"
+    },
+    {
+      "path": "resources/spellcheck.es_es.aff",
+      "kind": "data",
+      "mediaType": "text/plain",
+      "byteSize": 167135,
+      "digest": "sha256:892039d59db11d747061b81c3a92a52d48ba0e055b5835af1943cbd3c2fba85b"
+    },
+    {
+      "path": "resources/spellcheck.es_es.dic",
+      "kind": "data",
+      "mediaType": "text/plain",
+      "byteSize": 706202,
+      "digest": "sha256:907f786a8ceb3456722b20ad91dd4dbe99c5c16e45015ea63155e36f26b06d2c"
+    }
+  ],
+  "interfaces": {
+    "uiBridge": null,
+    "worker": {
+      "version": "mosaic-package-worker-v2",
+      "artifactPath": "dist/worker.js",
+      "operations": [
+        {
+          "id": "spellcheck.check",
+          "inputSchemaId": "spellcheck.diagnostic_input.v2",
+          "resultSchemaId": "spellcheck.diagnostic_result.v2"
+        },
+        {
+          "id": "spellcheck.diagnostic_action",
+          "inputSchemaId": "spellcheck.action_input.v1",
+          "resultSchemaId": "spellcheck.command_result.v1"
+        },
+        {
+          "id": "spellcheck.workspace_model",
+          "inputSchemaId": "spellcheck.model_input.v1",
+          "resultSchemaId": "spellcheck.native_model.v2"
+        },
+        {
+          "id": "spellcheck.workspace_command",
+          "inputSchemaId": "spellcheck.native_command.v1",
+          "resultSchemaId": "spellcheck.command_result.v1"
+        },
+        {
+          "id": "spellcheck.locale_model",
+          "inputSchemaId": "spellcheck.model_input.v1",
+          "resultSchemaId": "spellcheck.native_model.v2"
+        },
+        {
+          "id": "spellcheck.locale_command",
+          "inputSchemaId": "spellcheck.native_command.v1",
+          "resultSchemaId": "spellcheck.command_result.v1"
+        }
+      ],
+      "resources": [
+        {
+          "resourceId": "spellcheck.en_us.aff",
+          "artifactPath": "resources/spellcheck.en_us.aff"
+        },
+        {
+          "resourceId": "spellcheck.en_us.dic",
+          "artifactPath": "resources/spellcheck.en_us.dic"
+        },
+        {
+          "resourceId": "spellcheck.es_es.aff",
+          "artifactPath": "resources/spellcheck.es_es.aff"
+        },
+        {
+          "resourceId": "spellcheck.es_es.dic",
+          "artifactPath": "resources/spellcheck.es_es.dic"
+        }
+      ]
+    },
+    "data": {
+      "version": "mosaic-package-data-v2",
+      "sourceCodecIdentity": "spellcheck-v2",
+      "retainedSourceCodecIdentities": [],
+      "records": [
+        {
+          "id": "spellcheck.global_policy",
+          "schemaId": "spellcheck.global_policy.v1",
+          "mode": "settings-record",
+          "scope": "global",
+          "recordIdMode": "fixed",
+          "recordId": "policy",
+          "maxRecords": 1,
+          "maxBytes": 10000
+        },
+        {
+          "id": "spellcheck.library_policy",
+          "schemaId": "spellcheck.library_policy.v1",
+          "mode": "settings-record",
+          "scope": "library",
+          "recordIdMode": "fixed",
+          "recordId": "policy",
+          "maxRecords": 1,
+          "maxBytes": 20000
+        },
+        {
+          "id": "spellcheck.global_dictionary",
+          "schemaId": "spellcheck.dictionary_entry.v1",
+          "mode": "settings-record",
+          "scope": "global",
+          "recordIdMode": "generated",
+          "maxRecords": 5000,
+          "maxBytes": 2000
+        },
+        {
+          "id": "spellcheck.library_dictionary",
+          "schemaId": "spellcheck.dictionary_entry.v1",
+          "mode": "settings-record",
+          "scope": "library",
+          "recordIdMode": "generated",
+          "maxRecords": 5000,
+          "maxBytes": 2000
+        }
+      ],
+      "migrations": []
+    },
+    "connectorJobs": null
+  },
+  "capabilities": [
+    {
+      "schemaVersion": "mosaic-package-capabilities-v1",
+      "id": "spellcheck.ignore",
+      "description": "Ignore a diagnostic for the current editing session.",
+      "requestedScope": "library",
+      "requestedClassification": "privileged"
+    },
+    {
+      "schemaVersion": "mosaic-package-capabilities-v1",
+      "id": "spellcheck.library_add",
+      "description": "Add words to the active Library dictionary.",
+      "requestedScope": "library",
+      "requestedClassification": "privileged"
+    },
+    {
+      "schemaVersion": "mosaic-package-capabilities-v1",
+      "id": "spellcheck.library_manage",
+      "description": "View and manage the active Library dictionary.",
+      "requestedScope": "library",
+      "requestedClassification": "privileged"
+    },
+    {
+      "schemaVersion": "mosaic-package-capabilities-v1",
+      "id": "spellcheck.library_configure",
+      "description": "Configure Spell Check policy for the active Library.",
+      "requestedScope": "library",
+      "requestedClassification": "privileged"
+    },
+    {
+      "schemaVersion": "mosaic-package-capabilities-v1",
+      "id": "spellcheck.global_add",
+      "description": "Add words to the global dictionary.",
+      "requestedScope": "global",
+      "requestedClassification": "privileged"
+    },
+    {
+      "schemaVersion": "mosaic-package-capabilities-v1",
+      "id": "spellcheck.global_manage",
+      "description": "Manage global dictionary entries.",
+      "requestedScope": "global",
+      "requestedClassification": "privileged"
+    },
+    {
+      "schemaVersion": "mosaic-package-capabilities-v1",
+      "id": "spellcheck.global_configure",
+      "description": "Configure global Spell Check policy.",
+      "requestedScope": "global",
+      "requestedClassification": "privileged"
+    }
+  ],
+  "contributions": [
+    {
+      "schemaVersion": "mosaic-package-contributions-v1",
+      "id": "spellcheck.text_diagnostics",
+      "kind": "text-diagnostics",
+      "description": "Check authored text against governed English and Spanish dictionaries.",
+      "requiredCapabilityId": null,
+      "diagnosticsVersion": "mosaic-text-diagnostics-v2",
+      "locales": [
+        {
+          "locale": "en-US",
+          "resourceIds": [
+            "spellcheck.en_us.aff",
+            "spellcheck.en_us.dic"
+          ]
+        },
+        {
+          "locale": "es-ES",
+          "resourceIds": [
+            "spellcheck.es_es.aff",
+            "spellcheck.es_es.dic"
+          ]
+        }
+      ],
+      "operationId": "spellcheck.check",
+      "inputSchemaId": "spellcheck.diagnostic_input.v2",
+      "resultSchemaId": "spellcheck.diagnostic_result.v2",
+      "scopedDataReads": [
+        {
+          "readId": "spellcheck.global_policy_read",
+          "scope": "global",
+          "recordTypeId": "spellcheck.global_policy",
+          "mode": "record",
+          "recordId": "policy"
+        },
+        {
+          "readId": "spellcheck.library_policy_read",
+          "scope": "library",
+          "recordTypeId": "spellcheck.library_policy",
+          "mode": "record",
+          "recordId": "policy"
+        },
+        {
+          "readId": "spellcheck.global_dictionary_read",
+          "scope": "global",
+          "recordTypeId": "spellcheck.global_dictionary",
+          "mode": "collection",
+          "limit": 5000
+        },
+        {
+          "readId": "spellcheck.library_dictionary_read",
+          "scope": "library",
+          "recordTypeId": "spellcheck.library_dictionary",
+          "mode": "collection",
+          "limit": 5000
+        }
+      ],
+      "enforcement": {
+        "readId": "spellcheck.library_policy_read",
+        "booleanField": "blockCompletion",
+        "defaultValue": false
+      },
+      "presentation": {
+        "title": "Spell Check",
+        "description": "Review spelling suggestions and governed dictionary actions.",
+        "buttonLabel": "Spell Check",
+        "reviewLabel": "Spell Check",
+        "actions": [
+          {
+            "id": "spellcheck.ignore_occurrence",
+            "kind": "ignore",
+            "label": "Ignore",
+            "requiredCapabilityId": "spellcheck.ignore"
+          },
+          {
+            "id": "spellcheck.add_library",
+            "kind": "add-to-scope",
+            "label": "Add to Library",
+            "parentLabel": "Add to Dictionary",
+            "scope": "library",
+            "requiredCapabilityId": "spellcheck.library_add"
+          },
+          {
+            "id": "spellcheck.add_global",
+            "kind": "add-to-scope",
+            "label": "Add Globally",
+            "parentLabel": "Add to Dictionary",
+            "scope": "global",
+            "requiredCapabilityId": "spellcheck.global_add"
+          }
+        ]
+      },
+      "actionOperation": {
+        "operationId": "spellcheck.diagnostic_action",
+        "inputSchemaId": "spellcheck.action_input.v1",
+        "resultSchemaId": "spellcheck.command_result.v1"
+      },
+      "completion": {
+        "label": "Spell Check",
+        "stageLabel": "Check spelling",
+        "reasons": [
+          {
+            "code": "PACKAGE_TEXT_DIAGNOSTICS_UNRESOLVED",
+            "message": "Review or resolve the spelling issues highlighted by Spell Check before completing."
+          },
+          {
+            "code": "PACKAGE_TEXT_DIAGNOSTICS_INCOMPLETE",
+            "message": "Spell Check could not verify all saved text. Review the content and try again; if this continues, ask an Admin to update Spell Check."
+          },
+          {
+            "code": "PACKAGE_TEXT_DIAGNOSTICS_EXECUTION_FAILED",
+            "message": "Spell Check could not finish its completion check. Try again; if this continues, ask an Admin to update Spell Check."
+          }
+        ]
+      }
+    },
+    {
+      "schemaVersion": "mosaic-package-contributions-v1",
+      "id": "spellcheck.library_settings",
+      "kind": "native-surface",
+      "description": "Library Spell Check settings",
+      "requiredCapabilityId": "spellcheck.library_configure",
+      "nativeVersion": "mosaic-package-native-contributions-v2",
+      "surface": "content-workspace",
+      "model": {
+        "schemaVersion": "mosaic-package-native-model-v2",
+        "surface": "content-workspace",
+        "items": []
+      },
+      "modelOperation": {
+        "operationId": "spellcheck.workspace_model",
+        "inputSchemaId": "spellcheck.model_input.v1",
+        "resultSchemaId": "spellcheck.native_model.v2"
+      },
+      "commandOperation": {
+        "operationId": "spellcheck.workspace_command",
+        "inputSchemaId": "spellcheck.native_command.v1",
+        "resultSchemaId": "spellcheck.command_result.v1"
+      },
+      "scopedDataReads": [
+        {
+          "readId": "spellcheck.library_policy_read",
+          "scope": "library",
+          "recordTypeId": "spellcheck.library_policy",
+          "mode": "record",
+          "recordId": "policy"
+        }
+      ],
+      "commandCapabilities": [
+        {
+          "commandId": "spellcheck.save_library_policy",
+          "requiredCapabilityId": "spellcheck.library_configure"
+        }
+      ]
+    },
+    {
+      "schemaVersion": "mosaic-package-contributions-v1",
+      "id": "spellcheck.library_dictionary_settings",
+      "kind": "native-surface",
+      "description": "Library Spell Check dictionary",
+      "requiredCapabilityId": "spellcheck.library_manage",
+      "nativeVersion": "mosaic-package-native-contributions-v2",
+      "surface": "content-workspace",
+      "model": {
+        "schemaVersion": "mosaic-package-native-model-v2",
+        "surface": "content-workspace",
+        "items": []
+      },
+      "modelOperation": {
+        "operationId": "spellcheck.workspace_model",
+        "inputSchemaId": "spellcheck.model_input.v1",
+        "resultSchemaId": "spellcheck.native_model.v2"
+      },
+      "commandOperation": {
+        "operationId": "spellcheck.workspace_command",
+        "inputSchemaId": "spellcheck.native_command.v1",
+        "resultSchemaId": "spellcheck.command_result.v1"
+      },
+      "scopedDataReads": [
+        {
+          "readId": "spellcheck.library_policy_read",
+          "scope": "library",
+          "recordTypeId": "spellcheck.library_policy",
+          "mode": "record",
+          "recordId": "policy"
+        },
+        {
+          "readId": "spellcheck.library_dictionary_read",
+          "scope": "library",
+          "recordTypeId": "spellcheck.library_dictionary",
+          "mode": "collection",
+          "limit": 5000
+        }
+      ],
+      "commandCapabilities": [
+        {
+          "commandId": "spellcheck.add_library_word",
+          "requiredCapabilityId": "spellcheck.library_add"
+        },
+        {
+          "commandId": "spellcheck.edit_library_word",
+          "requiredCapabilityId": "spellcheck.library_manage"
+        },
+        {
+          "commandId": "spellcheck.delete_library_word",
+          "requiredCapabilityId": "spellcheck.library_manage"
+        }
+      ]
+    },
+    {
+      "schemaVersion": "mosaic-package-contributions-v1",
+      "id": "spellcheck.global_settings",
+      "kind": "native-surface",
+      "description": "Global Spell Check settings",
+      "requiredCapabilityId": "spellcheck.global_configure",
+      "nativeVersion": "mosaic-package-native-contributions-v2",
+      "surface": "content-workspace",
+      "model": {
+        "schemaVersion": "mosaic-package-native-model-v2",
+        "surface": "content-workspace",
+        "items": []
+      },
+      "modelOperation": {
+        "operationId": "spellcheck.workspace_model",
+        "inputSchemaId": "spellcheck.model_input.v1",
+        "resultSchemaId": "spellcheck.native_model.v2"
+      },
+      "commandOperation": {
+        "operationId": "spellcheck.workspace_command",
+        "inputSchemaId": "spellcheck.native_command.v1",
+        "resultSchemaId": "spellcheck.command_result.v1"
+      },
+      "scopedDataReads": [
+        {
+          "readId": "spellcheck.global_policy_read",
+          "scope": "global",
+          "recordTypeId": "spellcheck.global_policy",
+          "mode": "record",
+          "recordId": "policy"
+        }
+      ],
+      "commandCapabilities": [
+        {
+          "commandId": "spellcheck.save_global_policy",
+          "requiredCapabilityId": "spellcheck.global_configure"
+        }
+      ]
+    },
+    {
+      "schemaVersion": "mosaic-package-contributions-v1",
+      "id": "spellcheck.global_dictionary_settings",
+      "kind": "native-surface",
+      "description": "Global Spell Check dictionary",
+      "requiredCapabilityId": "spellcheck.global_manage",
+      "nativeVersion": "mosaic-package-native-contributions-v2",
+      "surface": "content-workspace",
+      "model": {
+        "schemaVersion": "mosaic-package-native-model-v2",
+        "surface": "content-workspace",
+        "items": []
+      },
+      "modelOperation": {
+        "operationId": "spellcheck.workspace_model",
+        "inputSchemaId": "spellcheck.model_input.v1",
+        "resultSchemaId": "spellcheck.native_model.v2"
+      },
+      "commandOperation": {
+        "operationId": "spellcheck.workspace_command",
+        "inputSchemaId": "spellcheck.native_command.v1",
+        "resultSchemaId": "spellcheck.command_result.v1"
+      },
+      "scopedDataReads": [
+        {
+          "readId": "spellcheck.global_dictionary_read",
+          "scope": "global",
+          "recordTypeId": "spellcheck.global_dictionary",
+          "mode": "collection",
+          "limit": 5000
+        },
+        {
+          "readId": "spellcheck.global_policy_read",
+          "scope": "global",
+          "recordTypeId": "spellcheck.global_policy",
+          "mode": "record",
+          "recordId": "policy"
+        }
+      ],
+      "commandCapabilities": [
+        {
+          "commandId": "spellcheck.add_global_word",
+          "requiredCapabilityId": "spellcheck.global_add"
+        },
+        {
+          "commandId": "spellcheck.edit_global_word",
+          "requiredCapabilityId": "spellcheck.global_manage"
+        },
+        {
+          "commandId": "spellcheck.delete_global_word",
+          "requiredCapabilityId": "spellcheck.global_manage"
+        }
+      ]
+    },
+    {
+      "schemaVersion": "mosaic-package-contributions-v1",
+      "id": "spellcheck.document_language",
+      "kind": "native-surface",
+      "description": "Spell Check language",
+      "requiredCapabilityId": null,
+      "nativeVersion": "mosaic-package-native-contributions-v2",
+      "surface": "builder-inspector",
+      "model": {
+        "schemaVersion": "mosaic-package-native-model-v2",
+        "surface": "builder-inspector",
+        "items": []
+      },
+      "modelOperation": {
+        "operationId": "spellcheck.locale_model",
+        "inputSchemaId": "spellcheck.model_input.v1",
+        "resultSchemaId": "spellcheck.native_model.v2"
+      },
+      "commandOperation": {
+        "operationId": "spellcheck.locale_command",
+        "inputSchemaId": "spellcheck.native_command.v1",
+        "resultSchemaId": "spellcheck.command_result.v1"
+      },
+      "scopedDataReads": [
+        {
+          "readId": "spellcheck.library_policy_read",
+          "scope": "library",
+          "recordTypeId": "spellcheck.library_policy",
+          "mode": "record",
+          "recordId": "policy"
+        }
+      ]
+    }
+  ]
+}

@@ -91,7 +91,15 @@
       "properties": {
         "path": { "$ref": "#/$defs/safePath" },
         "kind": {
-          "enum": ["ui", "worker", "wasm", "schema", "fixture", "connector"]
+          "enum": [
+            "ui",
+            "worker",
+            "wasm",
+            "schema",
+            "fixture",
+            "connector",
+            "data"
+          ]
         },
         "mediaType": { "type": "string", "minLength": 1, "maxLength": 100 },
         "byteSize": {
@@ -124,11 +132,49 @@
             "working-record",
             "immutable-version",
             "read-model",
-            "artifact-metadata"
+            "artifact-metadata",
+            "settings-record"
           ]
         },
-        "maxBytes": { "type": "integer", "minimum": 1, "maximum": 10000000 }
-      }
+        "maxBytes": { "type": "integer", "minimum": 1, "maximum": 10000000 },
+        "scope": { "enum": ["global", "library"] },
+        "recordIdMode": { "enum": ["fixed", "generated"] },
+        "recordId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_.-]{1,128}$"
+        },
+        "maxRecords": { "type": "integer", "minimum": 1, "maximum": 10000 }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "mode": { "const": "settings-record" } } },
+          "then": {
+            "required": ["scope", "recordIdMode", "maxRecords"],
+            "allOf": [
+              {
+                "if": {
+                  "properties": { "recordIdMode": { "const": "fixed" } }
+                },
+                "then": {
+                  "required": ["recordId"],
+                  "properties": { "maxRecords": { "const": 1 } }
+                },
+                "else": { "not": { "required": ["recordId"] } }
+              }
+            ]
+          },
+          "else": {
+            "not": {
+              "anyOf": [
+                { "required": ["scope"] },
+                { "required": ["recordIdMode"] },
+                { "required": ["recordId"] },
+                { "required": ["maxRecords"] }
+              ]
+            }
+          }
+        }
+      ]
     },
     "dataMigration": {
       "type": "object",
@@ -146,20 +192,7 @@
       "additionalProperties": false,
       "required": ["uiBridge", "worker", "data", "connectorJobs"],
       "properties": {
-        "uiBridge": {
-          "anyOf": [
-            {
-              "type": "object",
-              "additionalProperties": false,
-              "required": ["version", "bundlePath"],
-              "properties": {
-                "version": { "const": "mosaic-package-ui-bridge-v1" },
-                "bundlePath": { "$ref": "#/$defs/safePath" }
-              }
-            },
-            { "type": "null" }
-          ]
-        },
+        "uiBridge": { "type": "null" },
         "worker": {
           "anyOf": [
             {
@@ -167,15 +200,44 @@
               "additionalProperties": false,
               "required": ["version", "artifactPath", "operations"],
               "properties": {
-                "version": { "const": "mosaic-package-worker-v1" },
+                "version": {
+                  "enum": [
+                    "mosaic-package-worker-v1",
+                    "mosaic-package-worker-v2"
+                  ]
+                },
                 "artifactPath": { "$ref": "#/$defs/safePath" },
+                "resources": {
+                  "type": "array",
+                  "maxItems": 16,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["resourceId", "artifactPath"],
+                    "properties": {
+                      "resourceId": { "$ref": "#/$defs/identity" },
+                      "artifactPath": { "$ref": "#/$defs/safePath" }
+                    }
+                  }
+                },
                 "operations": {
                   "type": "array",
                   "minItems": 1,
                   "maxItems": 128,
                   "items": { "$ref": "#/$defs/operation" }
                 }
-              }
+              },
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "version": { "const": "mosaic-package-worker-v2" }
+                    }
+                  },
+                  "then": { "required": ["resources"] },
+                  "else": { "not": { "required": ["resources"] } }
+                }
+              ]
             },
             { "type": "null" }
           ]
@@ -191,7 +253,9 @@
             "migrations"
           ],
           "properties": {
-            "version": { "const": "mosaic-package-data-v1" },
+            "version": {
+              "enum": ["mosaic-package-data-v1", "mosaic-package-data-v2"]
+            },
             "sourceCodecIdentity": {
               "type": "string",
               "minLength": 1,
@@ -212,7 +276,27 @@
               "maxItems": 64,
               "items": { "$ref": "#/$defs/dataMigration" }
             }
-          }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "version": { "const": "mosaic-package-data-v1" }
+                }
+              },
+              "then": {
+                "properties": {
+                  "records": {
+                    "items": {
+                      "properties": {
+                        "mode": { "not": { "const": "settings-record" } }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
         },
         "connectorJobs": {
           "anyOf": [
@@ -275,7 +359,8 @@
         "kind": {
           "enum": [
             "native-surface",
-            "sandbox-workspace",
+            "text-diagnostics",
+            "email-raster-region",
             "command",
             "governed-content-type",
             "read-model",
@@ -293,26 +378,58 @@
           "anyOf": [{ "$ref": "#/$defs/identity" }, { "type": "null" }]
         },
         "nativeVersion": {
-          "const": "mosaic-package-native-contributions-v1"
+          "enum": [
+            "mosaic-package-native-contributions-v1",
+            "mosaic-package-native-contributions-v2"
+          ]
         },
         "surface": {
           "enum": [
-            "library-settings",
-            "catalog",
-            "campaign-create",
             "content-workspace",
             "builder-toolbar",
-            "builder-canvas",
             "builder-inspector",
             "preview",
-            "review",
-            "calendar"
+            "review"
           ]
         },
         "model": { "$ref": "#/$defs/nativeModel" },
         "modelOperation": { "$ref": "#/$defs/nativeOperationRef" },
         "commandOperation": { "$ref": "#/$defs/nativeOperationRef" },
         "evaluationOperation": { "$ref": "#/$defs/nativeOperationRef" },
+        "completion": { "$ref": "#/$defs/packageCompletionPresentation" },
+        "dataReads": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "readId",
+              "contributionId",
+              "recordTypeId",
+              "recordId"
+            ],
+            "properties": {
+              "readId": { "$ref": "#/$defs/identity" },
+              "contributionId": { "$ref": "#/$defs/identity" },
+              "recordTypeId": { "$ref": "#/$defs/identity" },
+              "recordId": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9_.-]{0,127}$"
+              }
+            }
+          }
+        },
+        "scopedDataReads": {
+          "type": "array",
+          "maxItems": 32,
+          "items": { "$ref": "#/$defs/scopedDataRead" }
+        },
+        "commandCapabilities": {
+          "type": "array",
+          "maxItems": 64,
+          "items": { "$ref": "#/$defs/commandCapability" }
+        },
         "entryPoint": { "$ref": "#/$defs/safePath" },
         "operationId": { "$ref": "#/$defs/identity" },
         "inputSchemaId": { "$ref": "#/$defs/identity" },
@@ -323,6 +440,36 @@
           "maxLength": 100
         },
         "sourceSchemaId": { "$ref": "#/$defs/identity" },
+        "regionContract": { "const": "mosaic-email-raster-regions-v1" },
+        "diagnosticsVersion": {
+          "enum": ["mosaic-text-diagnostics-v1", "mosaic-text-diagnostics-v2"]
+        },
+        "enforcement": { "$ref": "#/$defs/textDiagnosticEnforcement" },
+        "presentation": { "$ref": "#/$defs/textDiagnosticPresentation" },
+        "actionOperation": { "$ref": "#/$defs/nativeOperationRef" },
+        "locales": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 32,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["locale", "resourceIds"],
+            "properties": {
+              "locale": {
+                "type": "string",
+                "maxLength": 35,
+                "pattern": "^[a-z]{2,3}(?:-[a-zA-Z0-9]{2,8})*$"
+              },
+              "resourceIds": {
+                "type": "array",
+                "maxItems": 16,
+                "uniqueItems": true,
+                "items": { "$ref": "#/$defs/identity" }
+              }
+            }
+          }
+        },
         "artifactKind": { "$ref": "#/$defs/identity" },
         "mediaTypes": {
           "type": "array",
@@ -334,6 +481,146 @@
         "executionPlane": { "enum": ["worker", "connector-job"] }
       },
       "allOf": [
+        {
+          "if": { "properties": { "kind": { "const": "text-diagnostics" } } },
+          "then": {
+            "required": [
+              "diagnosticsVersion",
+              "locales",
+              "operationId",
+              "inputSchemaId",
+              "resultSchemaId"
+            ],
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "diagnosticsVersion": {
+                      "const": "mosaic-text-diagnostics-v2"
+                    }
+                  }
+                },
+                "then": {
+                  "required": [
+                    "scopedDataReads",
+                    "enforcement",
+                    "presentation",
+                    "completion"
+                  ],
+                  "properties": {
+                    "completion": {
+                      "properties": {
+                        "reasons": {
+                          "allOf": [
+                            {
+                              "contains": {
+                                "type": "object",
+                                "required": ["code"],
+                                "properties": {
+                                  "code": { "const": "PACKAGE_TEXT_DIAGNOSTICS_UNRESOLVED" }
+                                }
+                              }
+                            },
+                            {
+                              "contains": {
+                                "type": "object",
+                                "required": ["code"],
+                                "properties": {
+                                  "code": { "const": "PACKAGE_TEXT_DIAGNOSTICS_INCOMPLETE" }
+                                }
+                              }
+                            },
+                            {
+                              "contains": {
+                                "type": "object",
+                                "required": ["code"],
+                                "properties": {
+                                  "code": { "const": "PACKAGE_TEXT_DIAGNOSTICS_EXECUTION_FAILED" }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                },
+                "else": {
+                  "not": {
+                    "anyOf": [
+                      { "required": ["scopedDataReads"] },
+                      { "required": ["enforcement"] },
+                      { "required": ["presentation"] },
+                      { "required": ["actionOperation"] }
+                    ]
+                  }
+                }
+              }
+            ]
+          },
+          "else": {
+            "not": {
+              "anyOf": [
+                { "required": ["diagnosticsVersion"] },
+                { "required": ["locales"] }
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": { "kind": { "const": "email-raster-region" } }
+          },
+          "then": {
+            "required": [
+              "regionContract",
+              "sourceSchemaId",
+              "operationId",
+              "inputSchemaId",
+              "resultSchemaId",
+              "completion"
+            ],
+            "properties": {
+              "requiredCapabilityId": { "$ref": "#/$defs/identity" },
+              "completion": {
+                "properties": {
+                  "reasons": {
+                    "items": {
+                      "properties": {
+                        "code": {
+                          "enum": [
+                            "EMAIL_RASTER_WORKER_FAILED",
+                            "EMAIL_RASTER_WORKER_PLAN_INVALID"
+                          ]
+                        }
+                      }
+                    },
+                    "allOf": [
+                      {
+                        "contains": {
+                          "type": "object",
+                          "required": ["code"],
+                          "properties": {
+                            "code": { "const": "EMAIL_RASTER_WORKER_FAILED" }
+                          }
+                        }
+                      },
+                      {
+                        "contains": {
+                          "type": "object",
+                          "required": ["code"],
+                          "properties": {
+                            "code": { "const": "EMAIL_RASTER_WORKER_PLAN_INVALID" }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
         {
           "if": {
             "properties": {
@@ -348,6 +635,43 @@
           },
           "then": {
             "required": ["nativeVersion", "surface", "model"]
+          }
+        },
+        {
+          "if": {
+            "properties": { "kind": { "const": "native-surface" } },
+            "required": ["evaluationOperation"]
+          },
+          "then": {
+            "required": ["completion"],
+            "properties": {
+              "completion": {
+                "properties": {
+                  "reasons": {
+                    "allOf": [
+                      {
+                        "contains": {
+                          "type": "object",
+                          "required": ["code"],
+                          "properties": {
+                            "code": { "const": "PACKAGE_NATIVE_EVALUATION_EXECUTION_FAILED" }
+                          }
+                        }
+                      },
+                      {
+                        "contains": {
+                          "type": "object",
+                          "required": ["code"],
+                          "properties": {
+                            "code": { "const": "PACKAGE_NATIVE_EVALUATION_BINDING_MISMATCH" }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
           }
         },
         {
@@ -409,24 +733,141 @@
         "resultSchemaId": { "$ref": "#/$defs/identity" }
       }
     },
+    "scopedDataRead": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["readId", "scope", "recordTypeId", "mode"],
+      "properties": {
+        "readId": { "$ref": "#/$defs/identity" },
+        "scope": { "enum": ["global", "library"] },
+        "recordTypeId": { "$ref": "#/$defs/identity" },
+        "mode": { "enum": ["record", "collection"] },
+        "recordId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_.-]{1,128}$"
+        },
+        "limit": { "type": "integer", "minimum": 1, "maximum": 10000 }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "mode": { "const": "record" } } },
+          "then": {
+            "required": ["recordId"],
+            "not": { "required": ["limit"] }
+          },
+          "else": {
+            "required": ["limit"],
+            "not": { "required": ["recordId"] }
+          }
+        }
+      ]
+    },
+    "commandCapability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["commandId", "requiredCapabilityId"],
+      "properties": {
+        "commandId": { "$ref": "#/$defs/identity" },
+        "requiredCapabilityId": { "$ref": "#/$defs/identity" }
+      }
+    },
+    "textDiagnosticEnforcement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["readId", "booleanField", "defaultValue"],
+      "properties": {
+        "readId": { "$ref": "#/$defs/identity" },
+        "booleanField": {
+          "type": "string",
+          "pattern": "^[a-z][a-zA-Z0-9_]{0,63}$"
+        },
+        "defaultValue": { "type": "boolean" }
+      }
+    },
+    "textDiagnosticPresentation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "description", "buttonLabel", "reviewLabel", "actions"],
+      "properties": {
+        "title": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "description": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "buttonLabel": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "reviewLabel": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "actions": {
+          "type": "array",
+          "maxItems": 16,
+          "items": { "$ref": "#/$defs/textDiagnosticAction" }
+        }
+      }
+    },
+    "packageCompletionPresentation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "stageLabel", "reasons"],
+      "properties": {
+        "label": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "stageLabel": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "reasons": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["code", "message"],
+            "properties": {
+              "code": {
+                "type": "string",
+                "pattern": "^[A-Z][A-Z0-9_.-]{1,127}$"
+              },
+              "message": { "type": "string", "minLength": 1, "maxLength": 240 }
+            }
+          }
+        }
+      }
+    },
+    "textDiagnosticAction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "label", "requiredCapabilityId"],
+      "properties": {
+        "id": { "$ref": "#/$defs/identity" },
+        "kind": { "enum": ["ignore", "add-to-scope"] },
+        "label": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "parentLabel": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "scope": { "enum": ["global", "library"] },
+        "requiredCapabilityId": { "$ref": "#/$defs/identity" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "kind": { "const": "add-to-scope" } } },
+          "then": { "required": ["parentLabel", "scope"] },
+          "else": {
+            "not": {
+              "anyOf": [
+                { "required": ["parentLabel"] },
+                { "required": ["scope"] }
+              ]
+            }
+          }
+        }
+      ]
+    },
     "nativeModel": {
       "type": "object",
       "additionalProperties": false,
       "required": ["schemaVersion", "surface", "items"],
       "properties": {
-        "schemaVersion": { "const": "mosaic-package-native-model-v1" },
+        "schemaVersion": {
+          "enum": ["mosaic-package-native-model-v1", "mosaic-package-native-model-v2"]
+        },
         "surface": {
           "enum": [
-            "library-settings",
-            "catalog",
-            "campaign-create",
             "content-workspace",
             "builder-toolbar",
-            "builder-canvas",
             "builder-inspector",
             "preview",
-            "review",
-            "calendar"
+            "review"
           ]
         },
         "items": {
@@ -436,9 +877,8 @@
             "oneOf": [
               { "$ref": "#/$defs/nativeAction" },
               { "$ref": "#/$defs/nativeField" },
-              { "$ref": "#/$defs/nativeCanvasDecoration" },
-              { "$ref": "#/$defs/nativeContentType" },
-              { "$ref": "#/$defs/nativeProjection" }
+              { "$ref": "#/$defs/nativeProjection" },
+              { "$ref": "#/$defs/nativeCollection" }
             ]
           }
         }
@@ -477,7 +917,7 @@
         "id": { "$ref": "#/$defs/identity" },
         "label": { "type": "string", "minLength": 1, "maxLength": 160 },
         "control": {
-          "enum": ["text", "number", "select", "switch", "date", "asset"]
+          "enum": ["text", "number", "select", "switch", "date"]
         },
         "value": {},
         "options": {
@@ -494,38 +934,8 @@
             }
           }
         },
-        "commandId": { "$ref": "#/$defs/identity" }
-      }
-    },
-    "nativeCanvasDecoration": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["kind", "id", "targetIds", "appearance", "label"],
-      "properties": {
-        "kind": { "const": "canvas-decoration" },
-        "id": { "$ref": "#/$defs/identity" },
-        "targetIds": {
-          "type": "array",
-          "minItems": 1,
-          "maxItems": 64,
-          "items": { "type": "string", "minLength": 8, "maxLength": 128 }
-        },
-        "appearance": { "enum": ["outline", "rail"] },
-        "label": { "type": "string", "minLength": 1, "maxLength": 160 },
-        "commandId": { "$ref": "#/$defs/identity" }
-      }
-    },
-    "nativeContentType": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["kind", "id", "label", "description"],
-      "properties": {
-        "kind": { "const": "content-type" },
-        "id": { "$ref": "#/$defs/identity" },
-        "label": { "type": "string", "minLength": 1, "maxLength": 160 },
-        "description": { "type": "string", "minLength": 1, "maxLength": 240 },
-        "destinationId": { "$ref": "#/$defs/identity" },
-        "commandId": { "$ref": "#/$defs/identity" }
+        "commandId": { "$ref": "#/$defs/identity" },
+        "disabled": { "type": "boolean" }
       }
     },
     "nativeProjection": {
@@ -537,8 +947,63 @@
         "id": { "$ref": "#/$defs/identity" },
         "label": { "type": "string", "minLength": 1, "maxLength": 160 },
         "value": {},
-        "tone": { "enum": ["neutral", "info", "success", "warning", "danger"] },
-        "destinationId": { "$ref": "#/$defs/identity" }
+        "tone": { "enum": ["neutral", "info", "success", "warning", "danger"] }
+      }
+    },
+    "nativeCollection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "id", "label", "searchable", "columns", "rows", "actions"],
+      "properties": {
+        "kind": { "const": "collection" },
+        "id": { "$ref": "#/$defs/identity" },
+        "label": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "description": { "type": "string", "minLength": 1, "maxLength": 240 },
+        "searchable": { "type": "boolean" },
+        "columns": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "label"],
+            "properties": {
+              "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]{0,63}$" },
+              "label": { "type": "string", "minLength": 1, "maxLength": 160 },
+              "editable": { "type": "boolean" }
+            }
+          }
+        },
+        "rows": {
+          "type": "array",
+          "maxItems": 5000,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "cells"],
+            "properties": {
+              "id": { "type": "string", "pattern": "^[a-zA-Z0-9_.-]{1,128}$" },
+              "cells": { "type": "object" }
+            }
+          }
+        },
+        "actions": {
+          "type": "array",
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "label", "icon", "commandId"],
+            "properties": {
+              "id": { "$ref": "#/$defs/identity" },
+              "label": { "type": "string", "minLength": 1, "maxLength": 160 },
+              "icon": { "enum": ["edit", "delete"] },
+              "commandId": { "$ref": "#/$defs/identity" },
+              "disabled": { "type": "boolean" }
+            }
+          }
+        }
       }
     }
   }

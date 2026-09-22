@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "commandId", "input"],
+  "properties": {
+    "schemaVersion": { "const": "mosaic-package-native-command-v1" },
+    "commandId": {
+      "enum": [
+        "spellcheck.save_library_policy",
+        "spellcheck.save_global_policy",
+        "spellcheck.add_library_word",
+        "spellcheck.add_global_word",
+        "spellcheck.edit_library_word",
+        "spellcheck.delete_library_word",
+        "spellcheck.edit_global_word",
+        "spellcheck.delete_global_word",
+        "spellcheck.set_document_locale"
+      ]
+    },
+    "input": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["fields"],
+          "properties": {
+            "fields": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "spellcheck.default_locale",
+                "spellcheck.support_en_us",
+                "spellcheck.support_es_es",
+                "spellcheck.allow_ignore",
+                "spellcheck.allow_library_add",
+                "spellcheck.allow_global_add",
+                "spellcheck.block_completion"
+              ],
+              "properties": {
+                "spellcheck.default_locale": { "enum": ["en-US", "es-ES"] },
+                "spellcheck.support_en_us": { "type": "boolean" },
+                "spellcheck.support_es_es": { "type": "boolean" },
+                "spellcheck.allow_ignore": { "type": "boolean" },
+                "spellcheck.allow_library_add": { "type": "boolean" },
+                "spellcheck.allow_global_add": { "type": "boolean" },
+                "spellcheck.block_completion": { "type": "boolean" }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["fields"],
+          "properties": {
+            "fields": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["spellcheck.global_allow_add"],
+              "properties": {
+                "spellcheck.global_allow_add": { "type": "boolean" }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["fields"],
+          "properties": {
+            "fields": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["spellcheck.new_word", "spellcheck.new_word_locale"],
+              "properties": {
+                "spellcheck.new_word": { "type": "string", "maxLength": 80 },
+                "spellcheck.new_word_locale": { "enum": ["en-US", "es-ES"] }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["fields", "collectionId", "rowId", "cells"],
+          "properties": {
+            "fields": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["spellcheck.new_word", "spellcheck.new_word_locale"],
+              "properties": {
+                "spellcheck.new_word": { "type": "string", "maxLength": 80 },
+                "spellcheck.new_word_locale": { "enum": ["en-US", "es-ES"] }
+              }
+            },
+            "collectionId": {
+              "enum": [
+                "spellcheck.library_dictionary_view",
+                "spellcheck.global_dictionary_view"
+              ]
+            },
+            "rowId": { "type": "string", "minLength": 1, "maxLength": 128 },
+            "cells": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["word", "locale"],
+              "properties": {
+                "word": { "type": "string", "minLength": 1, "maxLength": 80 },
+                "locale": { "enum": ["en-US", "es-ES"] }
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["fieldId", "value", "context"],
+          "properties": {
+            "fieldId": { "const": "spellcheck.document_locale" },
+            "value": { "enum": ["library-default", "en-US", "es-ES"] },
+            "context": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "documentId",
+                "expectedWorkingRevision",
+                "packageExtensions"
+              ],
+              "properties": {
+                "documentId": { "type": "string", "minLength": 1, "maxLength": 128 },
+                "expectedWorkingRevision": { "type": "integer", "minimum": 0 },
+                "packageExtensions": { "type": "object" }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

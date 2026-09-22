@@ -1,0 +1,11 @@
+{
+  "name": "Spell Check",
+  "version": "0.2.0",
+  "description": "Deterministic dictionary-backed text diagnostics for Mosaic.",
+  "homepage": "https://github.com/lockidynamics/mosaic-integrations/tree/main/packages/spellcheck",
+  "mosaicVersion": "0.0.2",
+  "slug": "spellcheck",
+  "category": "workflow",
+  "logo": "logo.png",
+  "color": "#0fa64a"
+}

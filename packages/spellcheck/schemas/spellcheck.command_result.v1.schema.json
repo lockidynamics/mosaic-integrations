@@ -1,0 +1,203 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "kind",
+        "scope",
+        "recordTypeId",
+        "expectedGeneration",
+        "value"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "mosaic-package-native-command-result-v1"
+        },
+        "kind": {
+          "const": "package-scoped-data-create"
+        },
+        "scope": {
+          "enum": [
+            "global",
+            "library"
+          ]
+        },
+        "recordTypeId": {
+          "enum": [
+            "spellcheck.global_dictionary",
+            "spellcheck.library_dictionary"
+          ]
+        },
+        "expectedGeneration": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "value": {
+          "type": "object"
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "kind",
+        "scope",
+        "recordTypeId",
+        "recordId",
+        "expectedRevision",
+        "expectedGeneration",
+        "value"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "mosaic-package-native-command-result-v1"
+        },
+        "kind": {
+          "const": "package-scoped-data-update"
+        },
+        "scope": {
+          "enum": [
+            "global",
+            "library"
+          ]
+        },
+        "recordTypeId": {
+          "enum": [
+            "spellcheck.global_policy",
+            "spellcheck.library_policy",
+            "spellcheck.global_dictionary",
+            "spellcheck.library_dictionary"
+          ]
+        },
+        "recordId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "expectedGeneration": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "value": {
+          "type": "object"
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "kind",
+        "scope",
+        "recordTypeId",
+        "recordId",
+        "expectedRevision",
+        "expectedGeneration"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "mosaic-package-native-command-result-v1"
+        },
+        "kind": {
+          "const": "package-scoped-data-delete"
+        },
+        "scope": {
+          "enum": [
+            "global",
+            "library"
+          ]
+        },
+        "recordTypeId": {
+          "enum": [
+            "spellcheck.global_dictionary",
+            "spellcheck.library_dictionary"
+          ]
+        },
+        "recordId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "expectedGeneration": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "kind",
+        "packageKey",
+        "expectedWorkingRevision",
+        "extension"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "mosaic-package-native-command-result-v1"
+        },
+        "kind": {
+          "const": "communication-package-extension"
+        },
+        "packageKey": {
+          "const": "spellcheck"
+        },
+        "expectedWorkingRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "extension": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "schemaVersion",
+                "value"
+              ],
+              "properties": {
+                "schemaVersion": {
+                  "const": "spellcheck.document.v1"
+                },
+                "value": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "locale"
+                  ],
+                  "properties": {
+                    "locale": {
+                      "enum": [
+                        "en-US",
+                        "es-ES"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

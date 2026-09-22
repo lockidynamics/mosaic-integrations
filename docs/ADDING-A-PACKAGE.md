@@ -13,6 +13,10 @@ dist/                      # immutable prebuilt artifacts
 schemas/                   # closed JSON Schemas
 ```
 
+The optional `color` field in `mosaic-package.json` is a six-digit HEX
+catalog color (`#RRGGBB`). It is presentation metadata, not a release artifact,
+and does not change `releaseDigest`. Existing packages may omit it.
+
 The repository validator automatically discovers the package. Keep catalog
 slugs and `packageKey` values unique across the repository. A malformed package
 fails the whole commit-pinned repository snapshot, so all packages must pass

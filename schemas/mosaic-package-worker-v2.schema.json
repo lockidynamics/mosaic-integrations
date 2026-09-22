@@ -1,0 +1,305 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/lockidynamics/mosaic/blob/main/public/schemas/mosaic-package-worker-v2.schema.json",
+  "title": "Mosaic resource-backed Package Worker v2 envelopes",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/workerRequest"
+    },
+    {
+      "$ref": "#/$defs/workerResult"
+    }
+  ],
+  "$defs": {
+    "identity": {
+      "type": "string",
+      "maxLength": 160,
+      "pattern": "^[a-z][a-z0-9_]*(?:\\.[a-z][a-z0-9_]*)+$"
+    },
+    "opaqueId": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{7,127}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "diagnostic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "severity", "sourceId", "messageKey"],
+      "properties": {
+        "code": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9_]{0,99}$"
+        },
+        "severity": {
+          "enum": ["info", "warning", "error"]
+        },
+        "sourceId": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/opaqueId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "messageKey": {
+          "$ref": "#/$defs/identity"
+        }
+      }
+    },
+    "releaseIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["publisherKey", "packageKey", "version", "releaseDigest"],
+      "properties": {
+        "publisherKey": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,63}$"
+        },
+        "packageKey": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{0,63}$"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,14})\\.(0|[1-9][0-9]{0,14})\\.(0|[1-9][0-9]{0,14})$"
+        },
+        "releaseDigest": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "workerRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "invocationId",
+        "release",
+        "operationId",
+        "deterministicVersion",
+        "inputSchemaId",
+        "resultSchemaId",
+        "input",
+        "suppliedReads",
+        "limits",
+        "resources"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": "mosaic-package-worker-v2"
+        },
+        "invocationId": {
+          "$ref": "#/$defs/opaqueId"
+        },
+        "release": {
+          "$ref": "#/$defs/releaseIdentity"
+        },
+        "operationId": {
+          "$ref": "#/$defs/identity"
+        },
+        "deterministicVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "inputSchemaId": {
+          "$ref": "#/$defs/identity"
+        },
+        "resultSchemaId": {
+          "$ref": "#/$defs/identity"
+        },
+        "input": {},
+        "suppliedReads": {
+          "type": "array",
+          "maxItems": 128,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["readId", "value"],
+            "properties": {
+              "readId": {
+                "$ref": "#/$defs/identity"
+              },
+              "value": {}
+            }
+          }
+        },
+        "limits": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "cpuMilliseconds",
+            "wallMilliseconds",
+            "memoryBytes",
+            "stackBytes",
+            "inputBytes",
+            "inputDepth",
+            "inputNodes",
+            "outputBytes",
+            "outputDepth",
+            "outputNodes",
+            "diagnostics"
+          ],
+          "properties": {
+            "cpuMilliseconds": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 60000
+            },
+            "wallMilliseconds": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 120000
+            },
+            "memoryBytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000000000
+            },
+            "stackBytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16000000
+            },
+            "inputBytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100000000
+            },
+            "inputDepth": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "inputNodes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000000
+            },
+            "outputBytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100000000
+            },
+            "outputDepth": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "outputNodes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000000
+            },
+            "diagnostics": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000
+            }
+          }
+        },
+        "resources": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["resourceId", "mediaType", "digest", "chunks"],
+            "properties": {
+              "resourceId": {
+                "$ref": "#/$defs/identity"
+              },
+              "mediaType": {
+                "const": "text/plain"
+              },
+              "digest": {
+                "$ref": "#/$defs/sha256"
+              },
+              "chunks": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 32,
+                "items": {
+                  "type": "string",
+                  "maxLength": 64000
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "workerResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "invocationId", "ok"],
+      "properties": {
+        "schemaVersion": {
+          "const": "mosaic-package-worker-v2"
+        },
+        "invocationId": {
+          "$ref": "#/$defs/opaqueId"
+        },
+        "ok": {
+          "type": "boolean"
+        },
+        "result": {},
+        "diagnostics": {
+          "type": "array",
+          "maxItems": 1000,
+          "items": {
+            "$ref": "#/$defs/diagnostic"
+          }
+        },
+        "error": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["code"],
+          "properties": {
+            "code": {
+              "enum": [
+                "INVALID_INPUT",
+                "LIMIT_EXCEEDED",
+                "TIMED_OUT",
+                "CANCELLED",
+                "INVALID_RESULT",
+                "EXECUTION_FAILED"
+              ]
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "ok": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "required": ["result", "diagnostics"]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "ok": {
+                "const": false
+              }
+            }
+          },
+          "then": {
+            "required": ["error"]
+          }
+        }
+      ]
+    }
+  }
+}

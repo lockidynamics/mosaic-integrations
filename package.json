@@ -10,5 +10,8 @@
   "scripts": {
     "test": "node --test && node scripts/validate-repository.mjs",
     "validate": "node scripts/validate-repository.mjs"
+  },
+  "devDependencies": {
+    "ajv": "8.20.0"
   }
 }

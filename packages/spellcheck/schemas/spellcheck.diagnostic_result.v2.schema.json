@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "complete",
+    "diagnostics",
+    "enabledActionIds"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "mosaic-text-diagnostics-result-v2"
+    },
+    "complete": {
+      "type": "boolean"
+    },
+    "diagnostics": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "sourceId",
+          "revision",
+          "start",
+          "end",
+          "word",
+          "suggestions"
+        ],
+        "properties": {
+          "sourceId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024
+          },
+          "revision": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "start": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "end": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "word": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "suggestions": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            }
+          }
+        }
+      }
+    },
+    "enabledActionIds": {
+      "type": "array",
+      "maxItems": 3,
+      "items": {
+        "enum": [
+          "spellcheck.ignore_occurrence",
+          "spellcheck.add_library",
+          "spellcheck.add_global"
+        ]
+      }
+    }
+  }
+}

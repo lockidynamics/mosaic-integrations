@@ -1,0 +1,15 @@
+{
+  "name": "@lockidynamics/spellcheck-build",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "npm run build && node --experimental-strip-types --test tests/*.test.mjs"
+  },
+  "dependencies": {
+    "dictionary-en": "4.0.0",
+    "dictionary-es": "4.0.0",
+    "esbuild": "0.28.2",
+    "nspell": "2.1.5"
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "actionId",
+    "target",
+    "packageState"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "mosaic-text-diagnostics-action-v1"
+    },
+    "actionId": {
+      "enum": [
+        "spellcheck.add_library",
+        "spellcheck.add_global"
+      ]
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sourceId",
+        "revision",
+        "start",
+        "end",
+        "word",
+        "suggestions"
+      ],
+      "properties": {
+        "sourceId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        "revision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "end": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "word": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "suggestions": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        }
+      }
+    },
+    "packageState": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "schemaVersion",
+            "value"
+          ],
+          "properties": {
+            "schemaVersion": {
+              "const": "spellcheck.document.v1"
+            },
+            "value": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "locale"
+              ],
+              "properties": {
+                "locale": {
+                  "enum": [
+                    "en-US",
+                    "es-ES"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

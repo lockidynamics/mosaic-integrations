@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "defaultLocale",
+    "supportedLocales",
+    "allowIgnore",
+    "allowLibraryAdd",
+    "allowGlobalAdd",
+    "blockCompletion"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "spellcheck.library_policy.v1"
+    },
+    "defaultLocale": {
+      "enum": [
+        "en-US",
+        "es-ES"
+      ]
+    },
+    "supportedLocales": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 2,
+      "items": {
+        "enum": [
+          "en-US",
+          "es-ES"
+        ]
+      }
+    },
+    "allowIgnore": {
+      "type": "boolean"
+    },
+    "allowLibraryAdd": {
+      "type": "boolean"
+    },
+    "allowGlobalAdd": {
+      "type": "boolean"
+    },
+    "blockCompletion": {
+      "type": "boolean"
+    }
+  }
+}

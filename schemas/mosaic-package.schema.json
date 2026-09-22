@@ -43,6 +43,7 @@
       "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
     },
     "category": { "enum": ["authentication", "esp", "email", "workflow"] },
+    "color": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
     "renderContributions": {
       "type": "array",
       "maxItems": 16,
