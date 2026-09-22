@@ -18,7 +18,7 @@ function run(input, operationId = "flatpack.rasterize_region") {
 test("FlatPack Worker returns a deterministic plan for all four presentation variants and resolved states", () => {
   const result = run(request)
   assert.deepEqual(result, {
-    schemaVersion: "mosaic-email-raster-plan-v1",
+    schemaVersion: "mosaic-email-raster-plan-v2",
     kind: "rasterize-region",
     regionId: "hero-region",
     sourceChecksum: request.sourceChecksum,
@@ -33,8 +33,16 @@ test("FlatPack Worker returns a deterministic plan for all four presentation var
   assert.equal(JSON.stringify(run(request)), JSON.stringify(run(request)))
 })
 
+test("FlatPack Worker omits dark variants when Library governance disables Dark Mode", () => {
+  assert.deepEqual(run({ ...request, darkModeEnabled: false }).variants, [
+    "desktop-light",
+    "mobile-light",
+  ])
+})
+
 test("FlatPack Worker rejects altered or non-canonical source state input", () => {
   assert.throws(() => run({ ...request, sourceChecksum: "sha256:bad" }), /INVALID_INPUT/u)
+  assert.throws(() => run({ ...request, darkModeEnabled: undefined }), /INVALID_INPUT/u)
   assert.throws(
     () => run({ ...request, states: [{ ...request.states[0], selectionKey: '{"variationId":null,"moduleInstanceId":"module_hero"}' }] }),
     /NON_CANONICAL_SELECTION/u
@@ -70,7 +78,7 @@ test("FlatPack Worker has no package-owned host escape surface", () => {
 
 test("FlatPack package files are rooted at the package directory", async () => {
   assert.match(root.pathname, /\/packages\/flatpack\/$/u)
-  assert.match(workerSource, /mosaic-email-raster-plan-request-v1/u)
+  assert.match(workerSource, /mosaic-email-raster-plan-request-v2/u)
   assert.match(workerSource, /desktop-light/u)
   assert.match(workerSource, /mobile-dark/u)
 })
@@ -78,14 +86,14 @@ test("FlatPack package files are rooted at the package directory", async () => {
 test("FlatPack schemas validate the real source and worker plan fixtures", async () => {
   for (const name of [
     "flatpack.email_raster_source_v1.schema.json",
-    "flatpack.email_raster_plan_request_v1.schema.json",
-    "flatpack.email_raster_plan_v1.schema.json",
+    "flatpack.email_raster_plan_request_v2.schema.json",
+    "flatpack.email_raster_plan_v2.schema.json",
   ]) {
     const schema = JSON.parse(await readFile(new URL(`schemas/${name}`, root), "utf8"))
     assert.equal(schema.type, "object")
     assert.ok(schema.properties)
   }
   assert.equal(source.hostContract, "mosaic-email-raster-regions-v1")
-  assert.equal(request.schemaVersion, "mosaic-email-raster-plan-request-v1")
-  assert.equal(run(request).schemaVersion, "mosaic-email-raster-plan-v1")
+  assert.equal(request.schemaVersion, "mosaic-email-raster-plan-request-v2")
+  assert.equal(run(request).schemaVersion, "mosaic-email-raster-plan-v2")
 })

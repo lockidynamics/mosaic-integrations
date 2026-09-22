@@ -20,6 +20,8 @@ text.
   normally.
 - Complete the Email and receive the generated assets in the existing Mosaic
   Email Package.
+- Generate dark assets only when the Library's governed Dark Mode setting is
+  enabled.
 
 ## How it works in Mosaic
 

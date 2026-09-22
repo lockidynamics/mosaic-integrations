@@ -4,8 +4,8 @@
   "publisherKey": "lockidynamics",
   "packageKey": "flatpack",
   "catalogSlug": "flatpack",
-  "version": "1.0.0",
-  "releaseDigest": "sha256:232b1adaedd65eb36ad015657b1c3e16b221558d544b319ad5674cd1a916ce62",
+  "version": "1.1.0",
+  "releaseDigest": "sha256:98c44273b0ffdad21d14456b37ef5e5cf794bc05182d3fdc6e2b3849ac2883c2",
   "hostContract": "mosaic-package-host-v1",
   "mosaicCompatibility": { "minimumVersion": "0.0.1", "maximumVersion": null },
   "artifacts": [
@@ -13,8 +13,8 @@
       "path": "dist/worker.js",
       "kind": "worker",
       "mediaType": "text/javascript",
-      "byteSize": 2265,
-      "digest": "sha256:1cd501e029a19acf9b9034d985ad554662288c78a9ef381ed0aba8b617da0c75"
+      "byteSize": 2360,
+      "digest": "sha256:9ca33f72e0fbf0f9ea23a033675ee273ea5a1079f8b1ce03b3c70eb0a93db117"
     },
     {
       "path": "schemas/flatpack.email_raster_source_v1.schema.json",
@@ -24,18 +24,18 @@
       "digest": "sha256:954a97f29163c9ae6120b0946d1a212153f606745e5c8e9a49fc53b19acac1fd"
     },
     {
-      "path": "schemas/flatpack.email_raster_plan_request_v1.schema.json",
+      "path": "schemas/flatpack.email_raster_plan_request_v2.schema.json",
       "kind": "schema",
       "mediaType": "application/schema+json",
-      "byteSize": 1104,
-      "digest": "sha256:05e78a90761bb727a869d77b67be9bbe32e51a7099c837eaf9b1bd8533e9cd76"
+      "byteSize": 1169,
+      "digest": "sha256:f35f0df872c3d2db31b57bb99169226affe9481d7ec42c701f2f911d78ba39f2"
     },
     {
-      "path": "schemas/flatpack.email_raster_plan_v1.schema.json",
+      "path": "schemas/flatpack.email_raster_plan_v2.schema.json",
       "kind": "schema",
       "mediaType": "application/schema+json",
-      "byteSize": 1157,
-      "digest": "sha256:174ff0b228993a095b0ee0fec68963e5dae14e56235757916ad31222390f4b94"
+      "byteSize": 1167,
+      "digest": "sha256:e3ad17f98c00a13da6622fac42d9d039ab175ac178418891b28007de89101d78"
     }
   ],
   "interfaces": {
@@ -46,8 +46,8 @@
       "operations": [
         {
           "id": "flatpack.rasterize_region",
-          "inputSchemaId": "flatpack.email_raster_plan_request_v1",
-          "resultSchemaId": "flatpack.email_raster_plan_v1"
+          "inputSchemaId": "flatpack.email_raster_plan_request_v2",
+          "resultSchemaId": "flatpack.email_raster_plan_v2"
         }
       ]
     },
@@ -79,8 +79,8 @@
       "regionContract": "mosaic-email-raster-regions-v1",
       "sourceSchemaId": "flatpack.email_raster_source_v1",
       "operationId": "flatpack.rasterize_region",
-      "inputSchemaId": "flatpack.email_raster_plan_request_v1",
-      "resultSchemaId": "flatpack.email_raster_plan_v1"
+      "inputSchemaId": "flatpack.email_raster_plan_request_v2",
+      "resultSchemaId": "flatpack.email_raster_plan_v2"
     }
   ]
 }

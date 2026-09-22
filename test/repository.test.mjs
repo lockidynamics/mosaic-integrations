@@ -13,7 +13,7 @@ test("the official repository contains valid independent Package Releases", asyn
     {
       slug: "flatpack",
       packageKey: "flatpack",
-      version: "1.0.0",
+      version: "1.1.0",
     },
   ])
 })

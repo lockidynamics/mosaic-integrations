@@ -1,9 +1,10 @@
 {
-  "schemaVersion": "mosaic-email-raster-plan-request-v1",
+  "schemaVersion": "mosaic-email-raster-plan-request-v2",
   "regionId": "hero-region",
   "sourceChecksum": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
   "desktopWidthPx": 600,
   "mobileWidthPx": 375,
+  "darkModeEnabled": true,
   "states": [
     {
       "selectionKey": "[{\"moduleInstanceId\":\"module_hero\",\"variationId\":null}]",

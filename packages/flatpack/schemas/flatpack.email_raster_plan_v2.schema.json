@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["schemaVersion", "kind", "regionId", "sourceChecksum", "states", "variants"],
+  "properties": {
+    "schemaVersion": { "const": "mosaic-email-raster-plan-v2" },
+    "kind": { "const": "rasterize-region" },
+    "regionId": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "sourceChecksum": { "type": "string", "minLength": 71, "maxLength": 71 },
+    "states": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": {
+        "type": "object",
+        "required": ["selectionKey", "sourceDigest", "empty"],
+        "properties": {
+          "selectionKey": { "type": "string", "minLength": 2, "maxLength": 32768 },
+          "sourceDigest": { "type": "string", "minLength": 71, "maxLength": 71 },
+          "empty": { "type": "boolean" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "variants": {
+      "oneOf": [
+        { "const": ["desktop-light", "mobile-light"] },
+        { "const": ["desktop-light", "desktop-dark", "mobile-light", "mobile-dark"] }
+      ]
+    }
+  },
+  "additionalProperties": false
+}

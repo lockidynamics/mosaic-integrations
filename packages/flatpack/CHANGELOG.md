@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0] - 2026-09-22
+
+### Changed
+
+- Added the v2 raster-plan protocol so Mosaic can omit dark presentation
+  variants when Library Dark Mode governance is disabled.
+
 ## [1.0.0] - 2026-09-21
 
 ### Added

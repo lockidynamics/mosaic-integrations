@@ -1,5 +1,5 @@
-const PLAN_SCHEMA = "mosaic-email-raster-plan-v1"
-const REQUEST_SCHEMA = "mosaic-email-raster-plan-request-v1"
+const PLAN_SCHEMA = "mosaic-email-raster-plan-v2"
+const REQUEST_SCHEMA = "mosaic-email-raster-plan-request-v2"
 
 if (context.operationId !== "flatpack.rasterize_region")
   throw new Error("UNKNOWN_OPERATION")
@@ -16,6 +16,7 @@ if (
   input.desktopWidthPx < 1 ||
   !Number.isSafeInteger(input.mobileWidthPx) ||
   input.mobileWidthPx < 1 ||
+  typeof input.darkModeEnabled !== "boolean" ||
   !Array.isArray(input.states) ||
   input.states.length < 1 ||
   input.states.length > 64
@@ -51,12 +52,9 @@ return {
   regionId: input.regionId,
   sourceChecksum: input.sourceChecksum,
   states,
-  variants: [
-    "desktop-light",
-    "desktop-dark",
-    "mobile-light",
-    "mobile-dark",
-  ],
+  variants: input.darkModeEnabled
+    ? ["desktop-light", "desktop-dark", "mobile-light", "mobile-dark"]
+    : ["desktop-light", "mobile-light"],
 }
 
 function stableJson(value) {
