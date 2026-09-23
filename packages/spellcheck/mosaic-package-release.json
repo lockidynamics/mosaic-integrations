@@ -4,11 +4,11 @@
   "publisherKey": "lockidynamics",
   "packageKey": "spellcheck",
   "catalogSlug": "spellcheck",
-  "version": "0.2.0",
-  "releaseDigest": "sha256:ab0184b3468ce02a20540eb380e6a50fa279bf80dc2e1277668de76fad9ff299",
+  "version": "0.2.2",
+  "releaseDigest": "sha256:5586a1ca01183ef05a7b339f70cd5efc385eddca8cbad1d7fc110bd28a5d702b",
   "hostContract": "mosaic-package-host-v1",
   "mosaicCompatibility": {
-    "minimumVersion": "0.0.2",
+    "minimumVersion": "0.0.4",
     "maximumVersion": null
   },
   "artifacts": [
@@ -16,8 +16,8 @@
       "path": "dist/worker.js",
       "kind": "worker",
       "mediaType": "text/javascript",
-      "byteSize": 26600,
-      "digest": "sha256:4410617e8c86f01e7608e7af78eae0b9f1bbc0d4f2a1c69dc072f0120be330df"
+      "byteSize": 26637,
+      "digest": "sha256:ef042a7c98d4c3e6a82bf7f2b1e68f58e961c98295bd0f575e3177be676979a5"
     },
     {
       "path": "schemas/spellcheck.diagnostic_input.v2.schema.json",
@@ -44,8 +44,8 @@
       "path": "schemas/spellcheck.model_input.v1.schema.json",
       "kind": "schema",
       "mediaType": "application/schema+json",
-      "byteSize": 375,
-      "digest": "sha256:d3d4eb7de844a4508a53e5d53bae8173ea391ade0491324dd18c39f3cf9b455b"
+      "byteSize": 403,
+      "digest": "sha256:fc712c7b7b1267e71e1bdc1dc8c5d67366a8411f9a8924b603fbd5cbd35f1a68"
     },
     {
       "path": "schemas/spellcheck.native_command.v1.schema.json",
@@ -58,8 +58,8 @@
       "path": "schemas/spellcheck.native_model.v2.schema.json",
       "kind": "schema",
       "mediaType": "application/schema+json",
-      "byteSize": 7521,
-      "digest": "sha256:55a198c6c3c10f497b45f10d0b2092106f00a244e81f8d0f3a7e4ba917dc957c"
+      "byteSize": 7549,
+      "digest": "sha256:c848a832bcbfc2698757278b76d85f4be42e633d550df6899e63124213bec048"
     },
     {
       "path": "schemas/spellcheck.command_result.v1.schema.json",
@@ -344,22 +344,20 @@
           {
             "id": "spellcheck.ignore_occurrence",
             "kind": "ignore",
-            "label": "Ignore",
+            "label": "Ignore \"{word}\"",
             "requiredCapabilityId": "spellcheck.ignore"
           },
           {
             "id": "spellcheck.add_library",
             "kind": "add-to-scope",
-            "label": "Add to Library",
-            "parentLabel": "Add to Dictionary",
+            "label": "Add \"{word}\" to Library",
             "scope": "library",
             "requiredCapabilityId": "spellcheck.library_add"
           },
           {
             "id": "spellcheck.add_global",
             "kind": "add-to-scope",
-            "label": "Add Globally",
-            "parentLabel": "Add to Dictionary",
+            "label": "Add \"{word}\" globally",
             "scope": "global",
             "requiredCapabilityId": "spellcheck.global_add"
           }
@@ -393,13 +391,13 @@
       "schemaVersion": "mosaic-package-contributions-v1",
       "id": "spellcheck.library_settings",
       "kind": "native-surface",
-      "description": "Library Spell Check settings",
+      "description": "Spell Check",
       "requiredCapabilityId": "spellcheck.library_configure",
       "nativeVersion": "mosaic-package-native-contributions-v2",
-      "surface": "content-workspace",
+      "surface": "library-settings",
       "model": {
         "schemaVersion": "mosaic-package-native-model-v2",
-        "surface": "content-workspace",
+        "surface": "library-settings",
         "items": []
       },
       "modelOperation": {
@@ -432,13 +430,13 @@
       "schemaVersion": "mosaic-package-contributions-v1",
       "id": "spellcheck.library_dictionary_settings",
       "kind": "native-surface",
-      "description": "Library Spell Check dictionary",
+      "description": "Spell Check",
       "requiredCapabilityId": "spellcheck.library_manage",
       "nativeVersion": "mosaic-package-native-contributions-v2",
-      "surface": "content-workspace",
+      "surface": "library-settings",
       "model": {
         "schemaVersion": "mosaic-package-native-model-v2",
-        "surface": "content-workspace",
+        "surface": "library-settings",
         "items": []
       },
       "modelOperation": {

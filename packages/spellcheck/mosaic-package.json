@@ -1,9 +1,9 @@
 {
   "name": "Spell Check",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "description": "Deterministic dictionary-backed text diagnostics for Mosaic.",
   "homepage": "https://github.com/lockidynamics/mosaic-integrations/tree/main/packages/spellcheck",
-  "mosaicVersion": "0.0.2",
+  "mosaicVersion": "0.0.4",
   "slug": "spellcheck",
   "category": "workflow",
   "logo": "logo.png",

@@ -30,6 +30,8 @@ See the [FlatPack package page](packages/flatpack) for customer-facing details.
 
 ## Spell Check
 
+Enabled Libraries show a Spell Check tab in Library Settings for policy and dictionary controls. Package updates refresh catalog metadata, including the logo, from the newly saved repository snapshot.
+
 Spell Check provides offline dictionary diagnostics through a resource-backed
 Worker. It supports English and Spanish resources, bounded suggestions, and
 UTF-16 source ranges. Spell Check owns its policy, dictionary records, actions,

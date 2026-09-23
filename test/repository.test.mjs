@@ -35,8 +35,16 @@ test("the official repository contains valid independent Package Releases", asyn
     {
       slug: "spellcheck",
       packageKey: "spellcheck",
-      version: "0.2.0",
+      version: "0.2.2",
     },
+  ])
+  const spellcheck = JSON.parse(await readFile(resolve(root, "packages/spellcheck/mosaic-package-release.json"), "utf8"))
+  assert.deepEqual(spellcheck.contributions.filter((item) => item.surface === "library-settings").map((item) => item.id), ["spellcheck.library_settings", "spellcheck.library_dictionary_settings"])
+  const actions = spellcheck.contributions.find((item) => item.kind === "text-diagnostics").presentation.actions
+  assert.deepEqual(actions.map(({ label, parentLabel }) => [label, parentLabel ?? null]), [
+    ['Ignore "{word}"', null],
+    ['Add "{word}" to Library', null],
+    ['Add "{word}" globally', null],
   ])
   for (const [name, color] of [["flatpack", "#ff9933"], ["spellcheck", "#0fa64a"]]) {
     const catalog = JSON.parse(await readFile(resolve(root, `packages/${name}/mosaic-package.json`), "utf8"))

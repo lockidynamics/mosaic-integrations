@@ -209,7 +209,7 @@ test("keeps native admin settings and dictionaries capability-isolated", () => {
     recordRead("spellcheck.library_policy_read", null),
   ]
   const model = run(
-    { surface: "content-workspace" },
+    { surface: "library-settings" },
     {
       operationId: "spellcheck.workspace_model",
       suppliedReads: librarySettingsReads,
@@ -217,7 +217,7 @@ test("keeps native admin settings and dictionaries capability-isolated", () => {
     }
   )
   assert.equal(model.schemaVersion, "mosaic-package-native-model-v2")
-  assert.equal(model.surface, "content-workspace")
+  assert.equal(model.surface, "library-settings")
   assert.equal(model.items.some((item) => item.kind === "collection"), false)
 
   const fields = Object.fromEntries(
@@ -245,7 +245,7 @@ test("keeps native admin settings and dictionaries capability-isolated", () => {
   assert.equal(plan.value.blockCompletion, true)
 
   const libraryDictionary = run(
-    { surface: "content-workspace" },
+    { surface: "library-settings" },
     {
       operationId: "spellcheck.workspace_model",
       suppliedReads: [

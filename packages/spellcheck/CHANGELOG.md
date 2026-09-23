@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.2
+
+- Show Library policy and dictionary settings in one Spell Check tab on Library Settings.
+- Require Mosaic 0.0.4 for the Library Settings contribution surface.
+
+## 0.2.1
+
+- Put spelling suggestions and package-owned dictionary actions on the word's Builder context menu. Remove the Diagnostics header dialog from the host UI.
+
 ## 0.2.0
 
 - Replace the earlier diagnostic model with the v2 text-diagnostics operation,

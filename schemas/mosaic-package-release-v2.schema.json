@@ -386,6 +386,7 @@
         "surface": {
           "enum": [
             "content-workspace",
+            "library-settings",
             "builder-toolbar",
             "builder-inspector",
             "preview",
@@ -841,7 +842,7 @@
       "allOf": [
         {
           "if": { "properties": { "kind": { "const": "add-to-scope" } } },
-          "then": { "required": ["parentLabel", "scope"] },
+          "then": { "required": ["scope"] },
           "else": {
             "not": {
               "anyOf": [
@@ -864,6 +865,7 @@
         "surface": {
           "enum": [
             "content-workspace",
+            "library-settings",
             "builder-toolbar",
             "builder-inspector",
             "preview",

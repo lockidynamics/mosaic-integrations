@@ -155,7 +155,7 @@ function diagnosticAction(value) {
 }
 
 function workspaceModel(value) {
-  modelInput(value, "content-workspace")
+  modelInput(value, hasSupplied(READ.libraryPolicy) ? "library-settings" : "content-workspace")
   if (hasSupplied(READ.libraryDictionary)) return libraryDictionaryModel()
   if (hasSupplied(READ.libraryPolicy)) return librarySettingsModel()
   if (hasSupplied(READ.globalDictionary)) return globalDictionaryModel()
@@ -167,7 +167,7 @@ function librarySettingsModel() {
   const policy = libraryPolicy()
   return {
     schemaVersion: NATIVE_MODEL,
-    surface: "content-workspace",
+    surface: "library-settings",
     items: [
       {
         kind: "field",
@@ -233,7 +233,7 @@ function libraryDictionaryModel() {
   const policy = libraryPolicy()
   return {
     schemaVersion: NATIVE_MODEL,
-    surface: "content-workspace",
+    surface: "library-settings",
     items: [
       wordField(),
       localeField(policy.defaultLocale, policy.supportedLocales),
