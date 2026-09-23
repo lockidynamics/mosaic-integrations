@@ -426,6 +426,35 @@
           "maxItems": 32,
           "items": { "$ref": "#/$defs/scopedDataRead" }
         },
+        "browserDelivery": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["setupOperation", "checkOperation", "setupReads"],
+          "properties": {
+            "setupOperation": { "$ref": "#/$defs/nativeOperationRef" },
+            "checkOperation": { "$ref": "#/$defs/nativeOperationRef" },
+            "setupReads": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 32,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["readId", "fields"],
+                "properties": {
+                  "readId": { "$ref": "#/$defs/identity" },
+                  "fields": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 16,
+                    "uniqueItems": true,
+                    "items": { "type": "string", "pattern": "^[a-z][a-zA-Z0-9_]{0,63}$" }
+                  }
+                }
+              }
+            }
+          }
+        },
         "commandCapabilities": {
           "type": "array",
           "maxItems": 64,
@@ -585,6 +614,7 @@
                   "not": {
                     "anyOf": [
                       { "required": ["scopedDataReads"] },
+                      { "required": ["browserDelivery"] },
                       { "required": ["enforcement"] },
                       { "required": ["presentation"] },
                       { "required": ["actionOperation"] }
@@ -598,6 +628,7 @@
             "not": {
               "anyOf": [
                 { "required": ["diagnosticsVersion"] },
+                { "required": ["browserDelivery"] },
                 { "required": ["locales"] }
               ]
             }

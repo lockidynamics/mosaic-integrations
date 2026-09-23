@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.3
+
+- Require Mosaic 0.0.5 for saved-version spelling checks before Review.
+- Avoid computing suggestions for correctly spelled words; retain a loaded dictionary when the isolated Worker session is reused.
+- Support Mosaic's saved-version spelling gate at Review request as well as Complete.
+- Add a browser check operation and a server-prepared effective word/locale snapshot
+  so authorized Library editors can check text locally without per-edit requests.
+
 ## 0.2.2
 
 - Show Library policy and dictionary settings in one Spell Check tab on Library Settings.

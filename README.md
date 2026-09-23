@@ -35,9 +35,12 @@ Enabled Libraries show a Spell Check tab in Library Settings for policy and dict
 
 Spell Check provides offline dictionary diagnostics through a resource-backed
 Worker. It supports English and Spanish resources, bounded suggestions, and
-UTF-16 source ranges. Spell Check owns its policy, dictionary records, actions,
-and completion copy. Mosaic owns authorization and resource verification; the
-package has no filesystem, network, or host authority.
+UTF-16 source ranges. Its 0.2.3 release checks spelling locally in enabled
+Library editors with an effective word/locale snapshot, and authoritatively
+before Review and Complete. Spell Check owns its
+policy, dictionary records, actions, and completion copy. Mosaic owns
+authorization and resource verification; the package has no filesystem,
+network, or host authority.
 
 See the [Spell Check package page](packages/spellcheck) for implementation and
 redistribution details.

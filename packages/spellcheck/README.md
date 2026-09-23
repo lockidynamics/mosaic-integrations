@@ -3,9 +3,15 @@
 Spell Check is a deterministic, dictionary-backed Worker package for Mosaic.
 When enabled, its Library policy and dictionary controls appear together in the
 **Spell Check** tab of Library Settings. Global controls remain in the package
-workspace. Release 0.2.2 requires Mosaic 0.0.4.
+workspace. Release 0.2.3 requires Mosaic 0.0.5.
 
 It reports misspelled words with UTF-16 source ranges and bounded suggestions.
+For an enabled Library, Mosaic gives its editors a release-verified browser Worker,
+the effective custom-word list, and the effective locale/Ignore policy. The
+package combines global and Library words on the server from Mosaic-projected
+fields; raw settings records, record IDs, and checksums stay on the server. Browser checks
+run locally while editing. Saved Review and Complete checks remain authoritative
+server operations.
 
 The Worker receives locale resources through the host's `context.resources`:
 `spellcheck.en_us.aff`, `spellcheck.en_us.dic`, `spellcheck.es_es.aff`, and
@@ -24,7 +30,7 @@ records are host-scoped settings: Library and global dictionary management,
 configuration, and diagnostic ignore actions use the corresponding privileged
 capabilities declared in the release descriptor.
 
-When enabled, saved spelling diagnostics underline words in Builder text fields.
+When enabled, spelling diagnostics underline words in Builder text fields.
 Right-click an underlined word for suggestions, Ignore, and authorized Library
 or global dictionary actions. Editing a field invalidates its saved diagnostic
 until the new text is saved and checked.
@@ -33,7 +39,7 @@ The default policy uses `en-US`, supports `en-US` and `es-ES` document locales,
 and does not block Complete. Library policy controls the supported locales,
 ignore and dictionary actions, and completion blocking. Mosaic enforces the
 package-declared completion setting against saved content.
-When Spell Check blocks Complete, the release supplies the customer-facing reason
+When Spell Check blocks Review or Complete, the release supplies the customer-facing reason
 and Mosaic labels the failure as `Package · Spell Check · Check spelling`. Host
 runtime, source, authorization, and storage failures remain labeled as Mosaic.
 

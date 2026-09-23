@@ -35,7 +35,7 @@ test("the official repository contains valid independent Package Releases", asyn
     {
       slug: "spellcheck",
       packageKey: "spellcheck",
-      version: "0.2.2",
+      version: "0.2.3",
     },
   ])
   const spellcheck = JSON.parse(await readFile(resolve(root, "packages/spellcheck/mosaic-package-release.json"), "utf8"))

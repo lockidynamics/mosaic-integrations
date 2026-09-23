@@ -146,6 +146,61 @@ test("uses Library/document locales and scoped dictionaries while preserving ski
   assert.deepEqual(result.diagnostics, [])
 })
 
+test("browser setup exposes only effective words and policy metadata", () => {
+  const snapshot = run(
+    {
+      schemaVersion: "mosaic-text-diagnostics-browser-setup-v1",
+      projectedReads: [
+        {
+          readId: "spellcheck.library_policy_read",
+          mode: "record",
+          value: {
+            defaultLocale: "es-ES",
+            supportedLocales: ["en-US", "es-ES"],
+            allowIgnore: true,
+          },
+        },
+        {
+          readId: "spellcheck.global_dictionary_read",
+          mode: "collection",
+          value: [{ locale: "en-US", normalized: "brandname" }],
+        },
+        {
+          readId: "spellcheck.library_dictionary_read",
+          mode: "collection",
+          value: [{ locale: "es-ES", normalized: "holaa" }],
+        },
+      ],
+    },
+    { operationId: "spellcheck.browser_setup", suppliedReads: [], resources: [] }
+  )
+  assert.deepEqual(snapshot, {
+    schemaVersion: "spellcheck.browser_snapshot.v1",
+    effectivePolicy: {
+      defaultLocale: "es-ES",
+      supportedLocales: ["en-US", "es-ES"],
+      allowIgnore: true,
+    },
+    words: [
+      { locale: "en-US", word: "brandname" },
+      { locale: "es-ES", word: "holaa" },
+    ],
+  })
+  assert.equal(JSON.stringify(snapshot).includes("recordId"), false)
+  assert.equal(JSON.stringify(snapshot).includes("checksum"), false)
+  const result = run(
+    {
+      schemaVersion: "mosaic-text-diagnostics-input-v2",
+      sources: [{ sourceId: "subject", revision: "r1", text: "holaa typooo" }],
+      packageState: null,
+      browserSnapshot: snapshot,
+    },
+    { operationId: "spellcheck.browser_check", suppliedReads: [], resources: spanish }
+  )
+  assert.deepEqual(result.diagnostics.map(({ word }) => word), ["typooo"])
+  assert.deepEqual(result.enabledActionIds, ["spellcheck.ignore_occurrence"])
+})
+
 test("returns fenced dictionary mutation plans and rejects duplicates", () => {
   const suppliedReads = reads({ libraryGeneration: 7 })
   const plan = run(

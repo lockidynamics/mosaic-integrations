@@ -14,7 +14,7 @@ const body = (await readFile(new URL("src/worker.js", root), "utf8"))
   .replace(/^import nspell from "nspell"\n\n/u, "")
 const result = await build({
   stdin: {
-    contents: `import nspell from "nspell"; globalThis.spellcheckWorker = (input, context) => {\n${body}\n}`,
+    contents: `import nspell from "nspell"; globalThis.spellcheckWorker ||= (() => { const spellCache = new Map(); return (input, context) => {\n${body}\n}; })()`,
     resolveDir: new URL(".", root).pathname,
   },
   bundle: true,

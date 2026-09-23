@@ -10,6 +10,7 @@ const DOCUMENT_SCHEMA = "spellcheck.document.v1"
 const DICTIONARY_SCHEMA = "spellcheck.dictionary_entry.v1"
 const LIBRARY_POLICY_SCHEMA = "spellcheck.library_policy.v1"
 const GLOBAL_POLICY_SCHEMA = "spellcheck.global_policy.v1"
+const BROWSER_SNAPSHOT_SCHEMA = "spellcheck.browser_snapshot.v1"
 const LOCALES = Object.freeze({
   "en-US": Object.freeze({
     label: "English (US)",
@@ -39,6 +40,10 @@ const MAX_TOKEN_CODE_UNITS = 256
 switch (context.operationId) {
   case "spellcheck.check":
     return check(input)
+  case "spellcheck.browser_setup":
+    return browserSetup(input)
+  case "spellcheck.browser_check":
+    return check(input, browserSnapshot(input.browserSnapshot))
   case "spellcheck.diagnostic_action":
     return diagnosticAction(input)
   case "spellcheck.workspace_model":
@@ -53,13 +58,13 @@ switch (context.operationId) {
     throw new Error("UNKNOWN_OPERATION")
 }
 
-function check(value) {
+function check(value, browser = null) {
   const request = object(value, "INVALID_INPUT")
   if (request.schemaVersion !== DIAGNOSTIC_INPUT) throw new Error("INVALID_INPUT_SCHEMA")
   const sources = request.sources
   if (!Array.isArray(sources) || sources.length > MAX_SOURCES) throw new Error("INVALID_SOURCES")
 
-  const policy = libraryPolicy()
+  const policy = browser?.effectivePolicy ?? libraryPolicy()
   const locale = documentLocale(request.packageState, policy)
   if (!locale) return incomplete()
   const localeResources = LOCALES[locale]
@@ -71,8 +76,15 @@ function check(value) {
   const dic = resource(resources, localeResources.dic)
   if (!aff || !dic) return incomplete()
 
-  const accepted = acceptedWords(locale)
-  const spell = nspell(aff.text, dic.text)
+  const accepted = browser
+    ? new Set(browser.words.filter((entry) => entry.locale === locale).map((entry) => entry.word))
+    : acceptedWords(locale)
+  const dictionaryKey = `${aff.digest}:${dic.digest}`
+  let spell = spellCache.get(dictionaryKey)
+  if (!spell) {
+    spell = nspell(aff.text, dic.text)
+    spellCache.set(dictionaryKey, spell)
+  }
   const cache = new Map()
   const sourceIds = new Set()
   const diagnostics = []
@@ -106,9 +118,12 @@ function check(value) {
       const lookup = baseLookup(word)
       let checked = cache.get(lookup)
       if (!checked) {
+        const correct = spell.correct(lookup)
         checked = {
-          correct: spell.correct(lookup),
-          suggestions: spell.suggest(lookup).slice(0, MAX_SUGGESTIONS),
+          correct,
+          suggestions: correct
+            ? []
+            : spell.suggest(lookup).slice(0, MAX_SUGGESTIONS),
         }
         cache.set(lookup, checked)
       }
@@ -129,8 +144,105 @@ function check(value) {
     schemaVersion: DIAGNOSTIC_RESULT,
     complete: true,
     diagnostics,
-    enabledActionIds: enabledActions(policy, globalPolicy()),
+    enabledActionIds: browser
+      ? policy.allowIgnore ? ["spellcheck.ignore_occurrence"] : []
+      : enabledActions(policy, globalPolicy()),
   }
+}
+
+function browserSetup(value) {
+  const input = object(value, "INVALID_BROWSER_SETUP")
+  if (
+    input.schemaVersion !== "mosaic-text-diagnostics-browser-setup-v1" ||
+    !Array.isArray(input.projectedReads)
+  )
+    throw new Error("INVALID_BROWSER_SETUP")
+  const projected = (readId, mode) => {
+    const matches = input.projectedReads.filter((entry) =>
+      record(entry) && entry.readId === readId && entry.mode === mode
+    )
+    if (matches.length !== 1) throw new Error("INVALID_BROWSER_SETUP")
+    return matches[0].value
+  }
+  const libraryValue = projected(READ.libraryPolicy, "record")
+  const library = libraryValue === null
+    ? { defaultLocale: "en-US", supportedLocales: ["en-US", "es-ES"], allowIgnore: true }
+    : object(libraryValue, "INVALID_BROWSER_SETUP")
+  if (
+    !isLocale(library.defaultLocale) ||
+    !Array.isArray(library.supportedLocales) ||
+    library.supportedLocales.length < 1 ||
+    library.supportedLocales.length > 2 ||
+    !library.supportedLocales.every(isLocale) ||
+    new Set(library.supportedLocales).size !== library.supportedLocales.length ||
+    !library.supportedLocales.includes(library.defaultLocale) ||
+    typeof library.allowIgnore !== "boolean"
+  )
+    throw new Error("INVALID_BROWSER_SETUP")
+  const words = new Map()
+  for (const readId of [READ.globalDictionary, READ.libraryDictionary]) {
+    const entries = projected(readId, "collection")
+    if (!Array.isArray(entries) || entries.length > 5000)
+      throw new Error("INVALID_BROWSER_SETUP")
+    for (const entry of entries) {
+      const value = object(entry, "INVALID_BROWSER_SETUP")
+      if (
+        !isLocale(value.locale) ||
+        typeof value.normalized !== "string" ||
+        value.normalized.length < 1 ||
+        value.normalized.length > 80 ||
+        value.normalized !== normalize(value.normalized)
+      )
+        throw new Error("INVALID_BROWSER_SETUP")
+      if (!library.supportedLocales.includes(value.locale)) continue
+      words.set(`${value.locale}:${value.normalized}`, {
+        locale: value.locale,
+        word: value.normalized,
+      })
+    }
+  }
+  return {
+    schemaVersion: BROWSER_SNAPSHOT_SCHEMA,
+    effectivePolicy: {
+      defaultLocale: library.defaultLocale,
+      supportedLocales: library.supportedLocales,
+      allowIgnore: library.allowIgnore,
+    },
+    words: [...words.values()].sort((a, b) =>
+      a.locale.localeCompare(b.locale) || a.word.localeCompare(b.word)
+    ),
+  }
+}
+
+function browserSnapshot(value) {
+  const snapshot = object(value, "INVALID_BROWSER_SNAPSHOT")
+  if (snapshot.schemaVersion !== BROWSER_SNAPSHOT_SCHEMA)
+    throw new Error("INVALID_BROWSER_SNAPSHOT")
+  const policy = object(snapshot.effectivePolicy, "INVALID_BROWSER_SNAPSHOT")
+  if (
+    !isLocale(policy.defaultLocale) ||
+    !Array.isArray(policy.supportedLocales) ||
+    policy.supportedLocales.length < 1 ||
+    policy.supportedLocales.length > 2 ||
+    !policy.supportedLocales.every(isLocale) ||
+    new Set(policy.supportedLocales).size !== policy.supportedLocales.length ||
+    !policy.supportedLocales.includes(policy.defaultLocale) ||
+    typeof policy.allowIgnore !== "boolean" ||
+    !Array.isArray(snapshot.words) ||
+    snapshot.words.length > 10_000
+  )
+    throw new Error("INVALID_BROWSER_SNAPSHOT")
+  for (const entry of snapshot.words) {
+    if (
+      !record(entry) ||
+      !isLocale(entry.locale) ||
+      typeof entry.word !== "string" ||
+      entry.word.length > 80 ||
+      entry.word !== normalize(entry.word)
+    )
+      throw new Error("INVALID_BROWSER_SNAPSHOT")
+  }
+  return snapshot
 }
 
 function diagnosticAction(value) {

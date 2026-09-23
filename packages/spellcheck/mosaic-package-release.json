@@ -4,11 +4,11 @@
   "publisherKey": "lockidynamics",
   "packageKey": "spellcheck",
   "catalogSlug": "spellcheck",
-  "version": "0.2.2",
-  "releaseDigest": "sha256:5586a1ca01183ef05a7b339f70cd5efc385eddca8cbad1d7fc110bd28a5d702b",
+  "version": "0.2.3",
+  "releaseDigest": "sha256:92033323474d547168f51b4bc3568d179286abe4d1fe924ff137886ea1a919ca",
   "hostContract": "mosaic-package-host-v1",
   "mosaicCompatibility": {
-    "minimumVersion": "0.0.4",
+    "minimumVersion": "0.0.5",
     "maximumVersion": null
   },
   "artifacts": [
@@ -16,15 +16,29 @@
       "path": "dist/worker.js",
       "kind": "worker",
       "mediaType": "text/javascript",
-      "byteSize": 26637,
-      "digest": "sha256:ef042a7c98d4c3e6a82bf7f2b1e68f58e961c98295bd0f575e3177be676979a5"
+      "byteSize": 29309,
+      "digest": "sha256:1bdb5d13d50d834d3b5e50581b4fa838ec8dae096cb4c882cc7a7d9c5852b561"
     },
     {
       "path": "schemas/spellcheck.diagnostic_input.v2.schema.json",
       "kind": "schema",
       "mediaType": "application/schema+json",
-      "byteSize": 1715,
-      "digest": "sha256:d9890d6e0b251d536aad9e89d2f98813bf129098bfb40a4e0c462e1eb03ea11f"
+      "byteSize": 2909,
+      "digest": "sha256:84b3839c0a207ce21dcb257367d31a14cc6a4ba77b2328f3193e2d14ed3242e1"
+    },
+    {
+      "path": "schemas/spellcheck.browser_setup_input.v1.schema.json",
+      "kind": "schema",
+      "mediaType": "application/schema+json",
+      "byteSize": 2358,
+      "digest": "sha256:41a697f028943fa04e6c673fdffe4e6be45ad58d9259bf4e450f75c3459c2a17"
+    },
+    {
+      "path": "schemas/spellcheck.browser_snapshot.v1.schema.json",
+      "kind": "schema",
+      "mediaType": "application/schema+json",
+      "byteSize": 1091,
+      "digest": "sha256:2f3cce30e9dba8e899c49d278c7c336517a5c33a5409b4adad634e8109266c4b"
     },
     {
       "path": "schemas/spellcheck.diagnostic_result.v2.schema.json",
@@ -126,6 +140,16 @@
       "operations": [
         {
           "id": "spellcheck.check",
+          "inputSchemaId": "spellcheck.diagnostic_input.v2",
+          "resultSchemaId": "spellcheck.diagnostic_result.v2"
+        },
+        {
+          "id": "spellcheck.browser_setup",
+          "inputSchemaId": "spellcheck.browser_setup_input.v1",
+          "resultSchemaId": "spellcheck.browser_snapshot.v1"
+        },
+        {
+          "id": "spellcheck.browser_check",
           "inputSchemaId": "spellcheck.diagnostic_input.v2",
           "resultSchemaId": "spellcheck.diagnostic_result.v2"
         },
@@ -330,6 +354,42 @@
           "limit": 5000
         }
       ],
+      "browserDelivery": {
+        "setupOperation": {
+          "operationId": "spellcheck.browser_setup",
+          "inputSchemaId": "spellcheck.browser_setup_input.v1",
+          "resultSchemaId": "spellcheck.browser_snapshot.v1"
+        },
+        "checkOperation": {
+          "operationId": "spellcheck.browser_check",
+          "inputSchemaId": "spellcheck.diagnostic_input.v2",
+          "resultSchemaId": "spellcheck.diagnostic_result.v2"
+        },
+        "setupReads": [
+          {
+            "readId": "spellcheck.library_policy_read",
+            "fields": [
+              "defaultLocale",
+              "supportedLocales",
+              "allowIgnore"
+            ]
+          },
+          {
+            "readId": "spellcheck.global_dictionary_read",
+            "fields": [
+              "locale",
+              "normalized"
+            ]
+          },
+          {
+            "readId": "spellcheck.library_dictionary_read",
+            "fields": [
+              "locale",
+              "normalized"
+            ]
+          }
+        ]
+      },
       "enforcement": {
         "readId": "spellcheck.library_policy_read",
         "booleanField": "blockCompletion",

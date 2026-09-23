@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "projectedReads"],
+  "properties": {
+    "schemaVersion": { "const": "mosaic-text-diagnostics-browser-setup-v1" },
+    "projectedReads": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["readId", "mode", "value"],
+            "properties": {
+              "readId": { "const": "spellcheck.library_policy_read" },
+              "mode": { "const": "record" },
+              "value": {
+                "anyOf": [
+                  { "type": "null" },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["defaultLocale", "supportedLocales", "allowIgnore"],
+                    "properties": {
+                      "defaultLocale": { "enum": ["en-US", "es-ES"] },
+                      "supportedLocales": {
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": 2,
+                        "items": { "enum": ["en-US", "es-ES"] }
+                      },
+                      "allowIgnore": { "type": "boolean" }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["readId", "mode", "value"],
+            "properties": {
+              "readId": { "enum": ["spellcheck.global_dictionary_read", "spellcheck.library_dictionary_read"] },
+              "mode": { "const": "collection" },
+              "value": {
+                "type": "array",
+                "maxItems": 5000,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["locale", "normalized"],
+                  "properties": {
+                    "locale": { "enum": ["en-US", "es-ES"] },
+                    "normalized": { "type": "string", "minLength": 1, "maxLength": 80 }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}
