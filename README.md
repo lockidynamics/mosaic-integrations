@@ -22,9 +22,10 @@ layouts, light and dark appearances, personalization, links, and accessibility
 text remain part of the governed Email output.
 
 In Mosaic, an administrator installs FlatPack and enables it for a Library.
-Authors then configure FlatPack on eligible modules in the Email Builder. The
-finished Email Package includes the generated assets when the Email is
-completed.
+Authors then configure FlatPack on eligible modules in the Email Builder.
+FlatPack declares its label, orange accent, Link and ALT controls, and bracket
+rail request; Mosaic renders the shared Builder UI. The finished Email Package
+includes generated assets when the Email is completed.
 
 See the [FlatPack package page](packages/flatpack) for customer-facing details.
 

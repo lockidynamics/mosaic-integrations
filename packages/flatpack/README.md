@@ -26,7 +26,7 @@ text.
 ## How it works in Mosaic
 
 An administrator installs FlatPack and enables it for a Library. Authors use
-the FlatPack section in the existing module properties panel. FlatPack assets
+FlatPack-declared Link and ALT controls in the Mosaic-owned module properties panel and bracket rail. FlatPack assets
 are generated when the Email is completed, so normal drafting, previewing, and
 reviewing remain focused on the authored Email. FlatPack declares customer-facing
 copy for its Worker and output-plan failures, which Mosaic labels as package

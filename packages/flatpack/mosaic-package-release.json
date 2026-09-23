@@ -4,11 +4,11 @@
   "publisherKey": "lockidynamics",
   "packageKey": "flatpack",
   "catalogSlug": "flatpack",
-  "version": "1.1.1",
-  "releaseDigest": "sha256:d4733c9d3eda00501d88055932dd58366d33216ee74bad1a962b1b06066ec056",
+  "version": "1.2.0",
+  "releaseDigest": "sha256:d747a851d64b5de40cdcc58c926c390bad1e258eaad324c71e7ef429cfa2b219",
   "hostContract": "mosaic-package-host-v1",
   "mosaicCompatibility": {
-    "minimumVersion": "0.0.2",
+    "minimumVersion": "0.0.3",
     "maximumVersion": null
   },
   "artifacts": [
@@ -97,6 +97,18 @@
             "message": "FlatPack returned an invalid image output plan. Ask an Admin to update FlatPack before completing."
           }
         ]
+      },
+      "planContract": "mosaic-email-raster-plan-v2",
+      "authoring": {
+        "schemaVersion": "mosaic-email-raster-authoring-v1",
+        "label": "FlatPack",
+        "accent": "#ff9933",
+        "icon": "image",
+        "controls": [
+          "link",
+          "alt"
+        ],
+        "brackets": true
       }
     }
   ]

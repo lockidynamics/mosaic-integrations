@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0] - 2026-09-22
+
+### Changed
+
+- Declare the v2 raster-plan contract explicitly and request the Mosaic-owned Builder bracket rail, icon, color, Link and ALT controls through FlatPack authoring metadata. New generated raster assets use package-neutral Mosaic IDs while retained FlatPack IDs and completed bytes remain readable. No Worker artifact or stored-data migration.
+- Requires Mosaic 0.0.3, the first host version with this authoring and generated-asset contract.
+
 ## [1.1.1] - 2026-09-22
 
 ### Changed

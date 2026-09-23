@@ -26,6 +26,16 @@ test("FlatPack release descriptor is host-valid and binds every immutable artifa
   assert.equal(release.packageKey, "flatpack")
   assert.equal(release.publisherKey, "lockidynamics")
   assert.equal(release.contributions[0].kind, "email-raster-region")
+  assert.equal(release.version, "1.2.0")
+  assert.equal(release.contributions[0].planContract, "mosaic-email-raster-plan-v2")
+  assert.deepEqual(release.contributions[0].authoring, {
+    schemaVersion: "mosaic-email-raster-authoring-v1",
+    label: "FlatPack",
+    accent: "#ff9933",
+    icon: "image",
+    controls: ["link", "alt"],
+    brackets: true,
+  })
   for (const artifact of release.artifacts) {
     const bytes = await readFile(new URL(artifact.path, root))
     assert.equal(bytes.byteLength, artifact.byteSize, artifact.path)

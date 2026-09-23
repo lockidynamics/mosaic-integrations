@@ -442,6 +442,35 @@
         },
         "sourceSchemaId": { "$ref": "#/$defs/identity" },
         "regionContract": { "const": "mosaic-email-raster-regions-v1" },
+        "planContract": {
+          "enum": ["mosaic-email-raster-plan-v1", "mosaic-email-raster-plan-v2"]
+        },
+        "authoring": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "schemaVersion",
+            "label",
+            "accent",
+            "icon",
+            "controls",
+            "brackets"
+          ],
+          "properties": {
+            "schemaVersion": { "const": "mosaic-email-raster-authoring-v1" },
+            "label": { "type": "string", "minLength": 1, "maxLength": 80 },
+            "accent": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
+            "icon": { "enum": ["package", "image"] },
+            "controls": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 2,
+              "uniqueItems": true,
+              "items": { "enum": ["link", "alt"] }
+            },
+            "brackets": { "type": "boolean" }
+          }
+        },
         "diagnosticsVersion": {
           "enum": ["mosaic-text-diagnostics-v1", "mosaic-text-diagnostics-v2"]
         },
@@ -518,7 +547,9 @@
                                 "type": "object",
                                 "required": ["code"],
                                 "properties": {
-                                  "code": { "const": "PACKAGE_TEXT_DIAGNOSTICS_UNRESOLVED" }
+                                  "code": {
+                                    "const": "PACKAGE_TEXT_DIAGNOSTICS_UNRESOLVED"
+                                  }
                                 }
                               }
                             },
@@ -527,7 +558,9 @@
                                 "type": "object",
                                 "required": ["code"],
                                 "properties": {
-                                  "code": { "const": "PACKAGE_TEXT_DIAGNOSTICS_INCOMPLETE" }
+                                  "code": {
+                                    "const": "PACKAGE_TEXT_DIAGNOSTICS_INCOMPLETE"
+                                  }
                                 }
                               }
                             },
@@ -536,7 +569,9 @@
                                 "type": "object",
                                 "required": ["code"],
                                 "properties": {
-                                  "code": { "const": "PACKAGE_TEXT_DIAGNOSTICS_EXECUTION_FAILED" }
+                                  "code": {
+                                    "const": "PACKAGE_TEXT_DIAGNOSTICS_EXECUTION_FAILED"
+                                  }
                                 }
                               }
                             }
@@ -611,7 +646,9 @@
                           "type": "object",
                           "required": ["code"],
                           "properties": {
-                            "code": { "const": "EMAIL_RASTER_WORKER_PLAN_INVALID" }
+                            "code": {
+                              "const": "EMAIL_RASTER_WORKER_PLAN_INVALID"
+                            }
                           }
                         }
                       }
@@ -655,7 +692,9 @@
                           "type": "object",
                           "required": ["code"],
                           "properties": {
-                            "code": { "const": "PACKAGE_NATIVE_EVALUATION_EXECUTION_FAILED" }
+                            "code": {
+                              "const": "PACKAGE_NATIVE_EVALUATION_EXECUTION_FAILED"
+                            }
                           }
                         }
                       },
@@ -664,7 +703,9 @@
                           "type": "object",
                           "required": ["code"],
                           "properties": {
-                            "code": { "const": "PACKAGE_NATIVE_EVALUATION_BINDING_MISMATCH" }
+                            "code": {
+                              "const": "PACKAGE_NATIVE_EVALUATION_BINDING_MISMATCH"
+                            }
                           }
                         }
                       }
@@ -788,7 +829,13 @@
     "textDiagnosticPresentation": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["title", "description", "buttonLabel", "reviewLabel", "actions"],
+      "required": [
+        "title",
+        "description",
+        "buttonLabel",
+        "reviewLabel",
+        "actions"
+      ],
       "properties": {
         "title": { "type": "string", "minLength": 1, "maxLength": 240 },
         "description": { "type": "string", "minLength": 1, "maxLength": 240 },
@@ -860,7 +907,10 @@
       "required": ["schemaVersion", "surface", "items"],
       "properties": {
         "schemaVersion": {
-          "enum": ["mosaic-package-native-model-v1", "mosaic-package-native-model-v2"]
+          "enum": [
+            "mosaic-package-native-model-v1",
+            "mosaic-package-native-model-v2"
+          ]
         },
         "surface": {
           "enum": [
@@ -955,7 +1005,15 @@
     "nativeCollection": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["kind", "id", "label", "searchable", "columns", "rows", "actions"],
+      "required": [
+        "kind",
+        "id",
+        "label",
+        "searchable",
+        "columns",
+        "rows",
+        "actions"
+      ],
       "properties": {
         "kind": { "const": "collection" },
         "id": { "$ref": "#/$defs/identity" },
